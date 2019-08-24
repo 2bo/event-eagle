@@ -1,2 +1,14 @@
 /logs
 .idea
+src/node_modules
+src/public/hot
+src/public/storage
+src/storage/*.key
+src/vendor
+src/.env
+src/.phpunit.result.cache
+src/homestead.json
+src/homestead.yaml
+src/npm-debug.log
+src/yarn-error.log
+

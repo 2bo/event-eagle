@@ -11,4 +11,4 @@ src/homestead.json
 src/homestead.yaml
 src/npm-debug.log
 src/yarn-error.log
-
+docker/ash/.ash_history

@@ -15,6 +15,7 @@ class apiClient
             $res = $client->request('GET', $url, ['query' => $queryParams]);
             return json_decode($res->getBody(), true);
         } catch (ClientException $e) {
+            //FIXME: error handling
             throw $e;
         }
     }

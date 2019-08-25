@@ -9,4 +9,9 @@ class Workshop extends Model
     protected $guarded = [
         'id'
     ];
+
+    public function tags()
+    {
+        $this->belongsToMany(Tag::class);
+    }
 }

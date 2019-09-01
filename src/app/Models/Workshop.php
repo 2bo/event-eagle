@@ -12,6 +12,6 @@ class Workshop extends Model
 
     public function tags()
     {
-        $this->belongsToMany(Tag::class);
+        return $this->belongsToMany('App\Models\Tag')->withTimestamps();
     }
 }

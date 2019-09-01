@@ -13,7 +13,7 @@ class CreateTagWorkshopTable extends Migration
      */
     public function up()
     {
-        Schema::create('workshop_tag', function (Blueprint $table) {
+        Schema::create('tag_workshop', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->unsignedBigInteger('tag_id');
             $table->unsignedBigInteger('workshop_id');
@@ -32,6 +32,6 @@ class CreateTagWorkshopTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('workshop_tag');
+        Schema::dropIfExists('tag_workshop');
     }
 }

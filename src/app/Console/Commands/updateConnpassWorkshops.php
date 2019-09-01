@@ -40,7 +40,7 @@ class updateConnpassWorkshops extends Command
      */
     public function handle()
     {
-        $url = "https://connpass.com/ap/v1/event/";
+        $url = "https://connpass.com/api/v1/event/";
         $queryParams = ['count' => '100', 'order' => '3'];
         $connpassJson = apiClient::getJsonArray($url, $queryParams);
 

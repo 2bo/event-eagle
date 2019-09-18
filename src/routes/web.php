@@ -16,4 +16,5 @@ Route::get('/', function () {
 });
 
 Route::resource('workshops', 'WorkshopController');
+Route::resource('tags', 'TagController');
 

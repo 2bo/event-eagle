@@ -18,3 +18,7 @@ Route::get('/', function () {
 Route::resource('workshops', 'WorkshopController');
 Route::resource('tags', 'TagController');
 
+
+Auth::routes();
+
+Route::get('/home', 'HomeController@index')->name('home');

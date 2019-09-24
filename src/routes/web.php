@@ -11,9 +11,7 @@
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::get('/', 'WorkshopController@index')->name('root');
 
 Route::resource('workshops', 'WorkshopController');
 Route::resource('tags', 'TagController');

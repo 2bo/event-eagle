@@ -15,7 +15,7 @@ class WorkshopController extends Controller
     public function index()
     {
         $workshops = Workshop::with('tags')->get();
-        return view('workshop.index', ['workshops' => $workshops]);
+        return view('workshop.index', compact('workshops'));
     }
 
     /**

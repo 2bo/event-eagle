@@ -14,7 +14,9 @@ class WorkshopController extends Controller
      */
     public function index()
     {
-        $workshops = Workshop::with('tags')->get();
+        $workshops = Workshop::with('tags')
+            ->orderBy('started_at', 'desc')
+            ->paginate(15);
         return view('workshop.index', compact('workshops'));
     }
 

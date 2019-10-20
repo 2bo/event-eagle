@@ -1,6 +1,6 @@
 <?php
 
 return [
-    'limit_num_of_tags' => 5,
+    'connpass_api_url' => "https://connpass.com/api/v1/event/",
 ];
 

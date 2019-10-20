@@ -12,7 +12,7 @@ class apiClient
     {
         try {
             $client = new Client();
-            $res = $client->request('GET', $url, ['query' => $queryParams]);
+            $res = $client->request('GET', $url, ['query' => $queryParams, 'delay' => 5000.0]);
             return json_decode($res->getBody(), true);
         } catch (ClientException $e) {
             //FIXME: error handling

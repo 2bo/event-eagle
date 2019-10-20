@@ -1,9 +1,10 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Api;
 
 use App\Models\Workshop;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
 
 class WorkshopController extends Controller
 {
@@ -17,7 +18,7 @@ class WorkshopController extends Controller
         $workshops = Workshop::with('tags')
             ->orderBy('started_at', 'desc')
             ->paginate(15);
-        return view('workshop.index', compact('workshops'));
+        return $workshops;
     }
 
     /**
@@ -85,11 +86,4 @@ class WorkshopController extends Controller
     {
         //
     }
-
-    public function vueIndex()
-    {
-        $workshops = Workshop::all();
-        return view('workshop.vueindex', compact('workshops'));
-    }
-
 }

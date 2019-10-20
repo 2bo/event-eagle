@@ -1,5 +1,5 @@
 <template>
-    <div class="navbar">
+    <div class="navbar is-spaced navbar-header">
         <div class="navbar-brand">
             <div class="navbar-item">
                 <span class="title is-4">Ivnet Gate</span>
@@ -33,5 +33,6 @@
 </script>
 
 <style scoped>
-
+    .navbar-header {
+    }
 </style>

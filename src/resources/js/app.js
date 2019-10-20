@@ -21,6 +21,7 @@ window.Vue = require('vue');
 
 Vue.component('header-component', require('./components/Header.vue').default);
 Vue.component('footer-component', require('./components/Footer.vue').default);
+Vue.component('events-index-component', require('./components/EventsIndex.vue').default);
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to

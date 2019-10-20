@@ -12,6 +12,7 @@
 */
 
 Route::get('/', 'WorkshopController@index')->name('root');
+Route::get('/vue', 'WorkshopController@vueIndex');
 
 Route::resource('workshops', 'WorkshopController');
 Route::resource('tags', 'TagController');

@@ -19,8 +19,18 @@ class fetchConnpassEventsFromAPI extends Command
      *
      * @var string
      */
-    protected $signature = 'fetch:connpass {--e|event_id=*} {--k|keyword=*} {--y|ym=*} {--Y|ymd=*} 
-    {--nn|nickname=*} {--i|series_id=*} {--s|start=1} {--o|order=1} {--c|count=100} {--a|all=1}';
+    protected $signature = 'fetch:connpass 
+    {--e|event_id=* : event id}
+    {--k|keyword=* : keyword}
+    {--m|ym=* : year month}
+    {--d|ymd=* : year month day} 
+    {--pn|nickname=* : participant nickname }
+    {--on|owner_nickname=* : owner nickname }
+    {--i|series_id=* : group id}
+    {--s|start=1 : the page number of search results} 
+    {--o|order=3 : order of search result(1:updated_at, 2:started_at, 3:created_at)}
+    {--c|count=100 :  the maximum number of output data}
+    {--a|all=1 : paging to get all records(0:false, 1:true) }';
 
     /**
      * The console command description.
@@ -47,32 +57,38 @@ class fetchConnpassEventsFromAPI extends Command
     public function handle()
     {
         $url = config('const.connpass_api_url');
-        $connpassJson = apiClient::getJsonArray($url, $this->getUrlQueryParamFromOptions());
-$this->updateOrCreateEvents($connpassJson['events']);
+        $jsonArray = apiClient::getJsonArray($url, $this->getUrlQueryParamFromOptions());
+        Event::updateOrCreateFromConnpassJson($jsonArray);
 
         //全件取得する
         if ($this->option('all')) {
             $count = $this->option('count');
             $start = $this->option('start');
-            $eventCount = $connpassJson['results_available'];
+            $eventCount = $jsonArray['results_available'];
             //start位置から最後まで取得するための繰り返し回数
-            $loopCount = intdiv($eventCount - ($start * $count), $count);
+            $loopCount = intdiv($eventCount, $count);
+            if ($eventCount % $count !== 0) $loopCount++;
 
-            var_dump([$count, $start, $eventCount,$loopCount]);
             for ($i = 0; $i < $loopCount; $i++) {
-                $connpassJson = apiClient::getJsonArray($url, $this->getUrlQueryParamFromOptions(++$start));
-                $this->updateOrCreateEvents($connpassJson['events']);
+                $jsonArray = apiClient::getJsonArray($url, $this->getUrlQueryParamFromOptions($start));
+                Event::updateOrCreateFromConnpassJson($jsonArray);
+                $start += $count;
             }
         }
     }
 
     private function getUrlQueryParamFromOptions(int $start = null)
     {
-        $queryParams = [];
         // urlパラメータに使用するオプションのキー
-        $targetKey = ['event_id', 'keyword', 'ym', 'ymd', 'nickname', 'series_id', 'start', 'order', 'count'];
-        $options = array_intersect_key($this->options(), array_flip($targetKey));
+        $options = $this->options();
+        // 除外キー
+        $excludeKeys = ['all'];
 
+        foreach ($excludeKeys as $key) {
+            unset($options[$key]);
+        }
+
+        $queryParams = [];
         //startが引数で指定されている場合上書きする
         if ($start) $options['start'] = $start;
 
@@ -85,39 +101,22 @@ $this->updateOrCreateEvents($connpassJson['events']);
                 }
             }
         }
-        return $queryParams;
-    }
 
-    private function updateOrCreateEvents(array $events)
-    {
-        foreach ($events as $event) {
-            Event::updateOrCreate(
-                [
-                    'site_name' => 'connpass',
-                    'event_id' => $event['event_id']
-                ],
-                [
-                    'site_name' => 'connpass',
-                    'title' => $event['title'],
-                    'catch' => $event['catch'],
-                    'description' => $event['description'],
-                    'event_url' => $event['event_url'],
-                    'address' => $event['address'],
-                    'place' => $event['place'],
-                    'lat' => $event['lat'],
-                    'lon' => $event['lon'],
-                    'started_at' => Carbon::create(($event['started_at']))->format('Y-m-d H:i:s'),
-                    'ended_at' => Carbon::create(($event['ended_at']))->format('Y-m-d H:i:s'),
-                    'limit' => $event['limit'],
-                    'participants' => $event['accepted'],
-                    'waiting' => $event['waiting'],
-                    'owner_id' => $event['owner_id'],
-                    'owner_nickname' => $event['owner_nickname'],
-                    'owner_display_name' => $event['owner_display_name'],
-                    'group_id' => $event['series']['id'],
-                    'event_updated_at' => Carbon::create(($event['updated_at']))->format('Y-m-d H:i:s'),
-                ]
-            );
+        //日付の指定がない場合、今月を基準に既定範囲で取得する
+        if (!$options['ym'] && !$options['ymd']) {
+            //範囲
+            $monthFrom = 1;//ヶ月前~
+            $monthTo = 3; //~ヶ月後
+
+            $from = Carbon::today()->subMonth($monthFrom);
+            $ym = [];
+            for ($i = 0; $i <= ($monthFrom + $monthTo); $i++) {
+                $ym[] = $from->format('Ym');
+                $from->addMonth(1);
+            }
+            $queryParams['ym'] = implode(',', $ym);
         }
+
+        return $queryParams;
     }
 }

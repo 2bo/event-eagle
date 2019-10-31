@@ -12,7 +12,7 @@ use Illuminate\Console\Command;
  * @package App\Console\Commands
  * https://connpass.com/about/api/
  */
-class fetchConnpassEventsFromAPI extends Command
+class FetchConnpassEventsFromAPI extends Command
 {
     /**
      * The name and signature of the console command.

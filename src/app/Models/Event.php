@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Services\PrefectureService;
 use Illuminate\Database\Eloquent\Model;
 use Carbon\Carbon;
 
@@ -14,6 +15,9 @@ class Event extends Model
     public static function updateOrCreateFromConnpassJson(array $connpassJsonArray)
     {
         foreach ($connpassJsonArray['events'] as $event) {
+
+            $prefecture = $event['address'] ? PrefectureService::getPrefectureFromAddress($event['address']) : null;
+
             Event::updateOrCreate(
                 [
                     'site_name' => 'connpass',
@@ -25,6 +29,7 @@ class Event extends Model
                     'catch' => $event['catch'],
                     'description' => $event['description'],
                     'event_url' => $event['event_url'],
+                    'prefecture_id' => $prefecture ? $prefecture->id : null,
                     'address' => $event['address'],
                     'place' => $event['place'],
                     'lat' => $event['lat'],

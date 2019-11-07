@@ -3,7 +3,7 @@
 namespace App\Console\Commands;
 
 use App\Models\Event;
-use App\Services\apiClient;
+use App\Services\ApiClient;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
 
@@ -57,7 +57,7 @@ class FetchConnpassEventsFromAPI extends Command
     public function handle()
     {
         $url = config('const.connpass_api_url');
-        $jsonArray = apiClient::getJsonArray($url, $this->getUrlQueryParamFromOptions());
+        $jsonArray = ApiClient::getJsonArray($url, $this->getUrlQueryParamFromOptions(), 5000.0);
         Event::updateOrCreateFromConnpassJson($jsonArray);
 
         //全件取得する
@@ -70,7 +70,7 @@ class FetchConnpassEventsFromAPI extends Command
             if ($eventCount % $count !== 0) $loopCount++;
 
             for ($i = 0; $i < $loopCount; $i++) {
-                $jsonArray = apiClient::getJsonArray($url, $this->getUrlQueryParamFromOptions($start));
+                $jsonArray = ApiClient::getJsonArray($url, $this->getUrlQueryParamFromOptions($start, 5000.0));
                 Event::updateOrCreateFromConnpassJson($jsonArray);
                 $start += $count;
             }

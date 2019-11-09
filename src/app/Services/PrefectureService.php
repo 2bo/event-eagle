@@ -27,7 +27,7 @@ class PrefectureService
             'x' => $lon,
             'y' => $lat,
         ];
-        $jsonArray = ApiClient::getJsonArray($url, $params, 100.0);
+        $jsonArray = ApiClient::getJsonArray($url, $params, 1000.0);
 
         if (isset($jsonArray['response']['error'])) {
             return null;

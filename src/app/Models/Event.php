@@ -17,6 +17,9 @@ class Event extends Model
         foreach ($connpassJsonArray['events'] as $event) {
 
             $prefecture = $event['address'] ? PrefectureService::getPrefectureFromAddress($event['address']) : null;
+            if (!$prefecture && !empty($event['lat']) && !empty($event['lon'])) {
+                $prefecture = PrefectureService::getPrefectureFromCoordinates($event['lat'], $event['lon']);
+            }
 
             Event::updateOrCreate(
                 [

@@ -8,6 +8,9 @@ use Carbon\Carbon;
 
 class Event extends Model
 {
+    public const DOORKEEPER = 'doorkeeper';
+    public const CONNPASS = 'connpass';
+
     protected $guarded = [
         'id'
     ];

@@ -15,6 +15,12 @@ class Event extends Model
         'id'
     ];
 
+    public function tags()
+    {
+        return $this->belongsToMany('App\Models\Tag')->withTimestamps();
+    }
+
+
     public static function updateOrCreateFromConnpassJson(array $connpassJsonArray)
     {
         foreach ($connpassJsonArray['events'] as $event) {

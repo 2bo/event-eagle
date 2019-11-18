@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Tag extends Model
 {
-    public function workshops()
+    public function events()
     {
         return $this->belongsToMany('App\Models\Event')->withTimestamps();
     }

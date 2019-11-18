@@ -2,9 +2,9 @@
     <div>
         <span>{{$tag->name}}</span>
         <ul>
-            @foreach($tag->workshops as $workshop)
+            @foreach($tag->events as $event)
                 <li>
-                    <a href="{{$workshop->event_url}}">{{$workshop->title}}</a>
+                    <a href="{{$event->event_url}}">{{$event->title}}</a>
                 </li>
             @endforeach
         </ul>

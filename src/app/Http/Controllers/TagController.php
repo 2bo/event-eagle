@@ -14,7 +14,7 @@ class TagController extends Controller
      */
     public function index()
     {
-        $tags = Tag::with('workshops')->get();
+        $tags = Tag::with('events')->get();
         return view('tag.index', ['tags' => $tags]);
     }
 

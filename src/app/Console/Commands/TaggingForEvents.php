@@ -3,25 +3,25 @@
 namespace App\Console\Commands;
 
 use App\Models\Tag;
-use App\Models\Workshop;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Config;
+use App\Models\Event;
 
-class taggingForWorkshops extends Command
+class TaggingForEvents extends Command
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'tagging:workshops';
+    protected $signature = 'tagging:events';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'tagging for workshops';
+    protected $description = 'tagging for events';
 
     /**
      * Create a new command instance.
@@ -40,21 +40,21 @@ class taggingForWorkshops extends Command
      */
     public function handle()
     {
-        $characterLimit = 400; //descriptionのタグの探索範囲
-        $workshops = Workshop::all();
+        $characterLimit = 200; //descriptionのタグの探索範囲
+        $events = Event::all();
         $tags = Tag::all();
 
-        foreach ($workshops as $workshop) {
+        foreach ($events as $event) {
             $tagIds = [];
             foreach ($tags as $tag) {
                 $name = $tag->name;
-                $description = mb_substr($workshop->description, 0, $characterLimit);
-                if (mb_strpos($workshop->title, $name) !== false || mb_strpos($workshop->catch, $name) !== false
+                $description = mb_substr($event->description, 0, $characterLimit);
+                if (mb_strpos($event->title, $name) !== false || mb_strpos($event->catch, $name) !== false
                     || mb_strpos($description, $name) !== false) {
                     $tagIds[] = $tag->id;
                 }
             }
-            $workshop->tags()->sync($tagIds);
+            $event->tags()->sync($tagIds);
         }
     }
 }

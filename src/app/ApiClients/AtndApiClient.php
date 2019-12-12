@@ -16,7 +16,6 @@ class AtndApiClient
 
     public function fetchEvents()
     {
-        Log::debug($this->params);
         return ApiClient::getJsonArray(self::EVENT_API_URL, $this->params, 5000);
     }
 

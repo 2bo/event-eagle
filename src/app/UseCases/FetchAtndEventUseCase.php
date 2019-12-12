@@ -36,7 +36,6 @@ class FetchAtndEventUseCase implements FetchAtndEventUseCaseInterface
                 $this->atndApiClient->setNextPage($j);
                 $result = $this->atndApiClient->fetchEvents();
                 $this->eventRepository->updateOCreateAtndEventsFromAPIResult($result['events']);
-                Log::debug($count);
                 $count = count($result['events']);
             }
             $startMonth->addMonths(1);

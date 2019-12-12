@@ -3,7 +3,7 @@
 namespace App\Console\Commands;
 
 use App\Models\Event;
-use App\Services\ApiClient;
+use App\ApiClients\ApiClient;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
 

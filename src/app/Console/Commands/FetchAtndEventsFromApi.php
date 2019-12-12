@@ -2,6 +2,8 @@
 
 namespace App\Console\Commands;
 
+use App\InputPorts\FetchAtndEventsInput;
+use App\UseCases\FetchAtndEventUseCaseInterface;
 use Illuminate\Console\Command;
 
 class FetchAtndEventsFromApi extends Command
@@ -15,8 +17,10 @@ class FetchAtndEventsFromApi extends Command
     {--e|event_id=* : event id}
     {--k|keyword=* : keyword(and)}
     {--ko|keyword_or=* : keyword(or)}
-    {--m|ym=* : year month}
-    {--d|ymd=* : year month day}
+    {--fm|from_ym= : from month}
+    {--tm|to_ym= : to month}
+    {--fd|from_ymd= : from day}
+    {--td|to_ymd= : to day}
     {--u|user_id=* : participant user id}
     {--un|nickname=* : participant nickname}
     {--ut|twitter_id=* : participant twitter id}
@@ -50,8 +54,13 @@ class FetchAtndEventsFromApi extends Command
      *
      * @return mixed
      */
-    public function handle()
+    public function handle(FetchAtndEventUseCaseInterface $fetchAtndEventUseCase)
     {
-        //
+        $fetchAtndEventsInput = new FetchAtndEventsInput();
+        $fetchAtndEventsInput->startYearMonth = $this->option('from_ym');
+        $fetchAtndEventsInput->endYearMonth = $this->option('to_ym');
+        $fetchAtndEventsInput->isAll = !!$this->option('all');
+        $fetchAtndEventUseCase->handle($fetchAtndEventsInput);
     }
+
 }

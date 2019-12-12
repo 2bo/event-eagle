@@ -4,6 +4,7 @@
 namespace App\Services;
 
 use App\Models\Prefecture;
+use App\ApiClients\ApiClient;
 
 class PrefectureService
 {

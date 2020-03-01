@@ -6,6 +6,7 @@ use App\Models\Tag;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Config;
 use App\Models\Event;
+use Illuminate\Support\Facades\DB;
 
 class TaggingForEvents extends Command
 {
@@ -42,15 +43,15 @@ class TaggingForEvents extends Command
     {
         $characterLimit = 200; //descriptionのタグの探索範囲
         $events = Event::all();
-        $tags = Tag::all();
+        $tags = DB::table('tags')->orderBy('id')->limit(400)->get();
 
         foreach ($events as $event) {
             $tagIds = [];
             foreach ($tags as $tag) {
-                $name = $tag->name;
-                $description = mb_substr($event->description, 0, $characterLimit);
-                if (mb_strpos($event->title, $name) !== false || mb_strpos($event->catch, $name) !== false
-                    || mb_strpos($description, $name) !== false) {
+                $pattern = $tag->pattern;
+                $description = mb_substr(strip_tags($event->description), 0, $characterLimit);
+                if (preg_match($pattern, $event->title) || preg_match($pattern, $event->catch)
+                    || preg_match($pattern, $description)) {
                     $tagIds[] = $tag->id;
                 }
             }

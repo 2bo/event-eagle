@@ -3,8 +3,8 @@
 
 namespace App\Services;
 
-
 use App\Repositories\TagRepository;
+use App\ApiClients\ApiClient;
 
 class QiitaService
 {

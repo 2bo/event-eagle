@@ -18,7 +18,7 @@ class TagRepository
     public function saveTagsFromNames(array $tagNames)
     {
         foreach ($tagNames as $tagName) {
-            Tag::updateOrCreate(['name' => $tagName]);
+            Tag::updateOrCreate(['name' => $tagName], ['pattern' => '/' . $tagName . '/u']);
         }
     }
 }

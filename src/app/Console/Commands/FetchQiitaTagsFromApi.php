@@ -40,7 +40,7 @@ class FetchQiitaTagsFromApi extends Command
     public function handle()
     {
         try {
-            QiitaService::fetchTagsFromApi();
+            QiitaService::fetchTagsFromApi(1, 3);
         } catch (Exception $e) {
             $this->error($e->getMessage());
         }

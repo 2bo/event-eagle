@@ -2,7 +2,8 @@
 
 namespace App\Repositories;
 
-use App\Models\Event;
+use App\Models\Event as EventDataModel;
+use App\Domain\Event\Event;
 use Illuminate\Support\Facades\DB;
 use App\Services\PrefectureService;
 use Carbon\Carbon;
@@ -11,9 +12,10 @@ class EventRepository
 {
     public function getModelClass(): string
     {
-        return Event::class;
+        return EventDataModel::class;
     }
 
+    // FIXME Domain/Eventを返すように変更
     public function getNewEvents(): array
     {
         $events = DB::table('events')
@@ -24,6 +26,42 @@ class EventRepository
         return $events;
     }
 
+    public function updateOrCreateEvent(Event $event): Event
+    {
+        $eventDataModel = EventDataModel::updateOrCreate(
+            [
+                'site_name' => $event->getSiteName(),
+                'event_id' => $event->getEventId()
+            ],
+            [
+                'title' => $event->getTitle(),
+                'catch' => $event->getCatch(),
+                'description' => $event->getDescription(),
+                'prefecture_id' => $event->getPrefectureId(),
+                'started_at' => $event->getStartedAt(),
+                'ended_at' => $event->getEndedAt(),
+                'event_url' => $event->getEventUrl(),
+                'limit' => $event->getLimit(),
+                'address' => $event->getAddress(),
+                'place' => $event->getPlace(),
+                'lat' => $event->getLat(),
+                'lon' => $event->getLon(),
+                'owner_id' => $event->getOwnerId(),
+                'owner_nickname' => $event->getOwnerNickname(),
+                'owner_twitter_id' => $event->getOwnerTwitterId(),
+                'owner_display_name' => $event->getOwnerDisplayName(),
+                'group_id' => $event->getGroupId(),
+                'participants' => $event->getParticipants(),
+                'waiting' => $event->getWaiting(),
+                'event_created_at' => $event->getEventCreatedAt(),
+                'event_updated_at' => $event->getEventUpdatedAt(),
+            ]
+        );
+        $event->setId($eventDataModel->id);
+        return $event;
+    }
+
+    // FIXME このメソッドを廃止する
     public function updateOCreateAtndEventsFromAPIResult(array $eventJson)
     {
         foreach ($eventJson as $record) {

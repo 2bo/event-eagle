@@ -35,27 +35,27 @@ class Event
         ?int $id,
         string $site_name,
         int $event_id,
-        ?string $title,
-        ?string $catch,
-        ?string $description,
-        ?string $event_url,
-        ?int $prefecture_id,
-        ?string $address,
-        ?string $place,
-        ?float $lat,
-        ?float $lon,
-        ?DateTime $started_at,
-        ?DateTime $ended_at,
-        ?int $limit,
-        ?int $participants,
-        ?int $waiting,
-        ?int $owner_id,
-        ?string $owner_nickname,
-        ?string $owner_twitter_id,
-        ?string $owner_display_name,
-        ?string $group_id,
-        ?DateTime $event_created_at,
-        ?DateTime $event_updated_at
+        ?string $title = null,
+        ?string $catch = null,
+        ?string $description = null,
+        ?string $event_url = null,
+        ?int $prefecture_id = null,
+        ?string $address = null,
+        ?string $place = null,
+        ?float $lat = null,
+        ?float $lon = null,
+        ?DateTime $started_at = null,
+        ?DateTime $ended_at = null,
+        ?int $limit = null,
+        ?int $participants = null,
+        ?int $waiting = null,
+        ?int $owner_id = null,
+        ?string $owner_nickname = null,
+        ?string $owner_twitter_id = null,
+        ?string $owner_display_name = null,
+        ?string $group_id = null,
+        ?DateTime $event_created_at = null,
+        ?DateTime $event_updated_at = null
     )
     {
         $this->id = $id;
@@ -95,7 +95,8 @@ class Event
      * Repository以外での呼び出し禁止
      * @param int $id
      */
-    public function setId(int $id){
+    public function setId(int $id)
+    {
         $this->id = $id;
     }
 

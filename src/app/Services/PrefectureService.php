@@ -30,7 +30,7 @@ class PrefectureService
             'x' => $lon,
             'y' => $lat,
         ];
-        $jsonArray = ApiClient::getJsonArray($url, $params, 1000.0);
+        $jsonArray = ApiClient::getJsonArray($url, $params, 5000.0);
 
         if (isset($jsonArray['response']['error'])) {
             return null;
@@ -42,7 +42,6 @@ class PrefectureService
         return $prefecture;
     }
 
-    //FIXME バグっていそうなので要確認
     public function getPrefecture(?string $address = null, ?float $lat = null, ?float $lon = null): ?Prefecture
     {
         $prefecture = null;

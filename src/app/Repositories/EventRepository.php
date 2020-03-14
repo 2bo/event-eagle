@@ -2,17 +2,25 @@
 
 namespace App\Repositories;
 
-use App\Models\Event as EventDataModel;
-use App\Domain\Event\Event;
+use App\Domain\Models\Event\EventRepositoryInterface;
+use App\DataModels\Event as EventDataModel;
+use App\Domain\Models\Event\Event;
+use App\Domain\Models\Prefecture\PrefectureId;
 use Illuminate\Support\Facades\DB;
-use App\Services\PrefectureService;
+use App\Domain\Services\PrefectureService;
 use Carbon\Carbon;
 
-class EventRepository
+class EventRepository implements EventRepositoryInterface
 {
-    public function getModelClass(): string
+
+    public function findAll(): array
     {
-        return EventDataModel::class;
+        $events = [];
+        $dataModels = EventDataModel::all();
+        foreach ($dataModels as $dataModel) {
+            $events[] = $this->convertDataModelToEntity($dataModel);
+        }
+        return $events;
     }
 
     // FIXME Domain/Eventを返すように変更
@@ -28,7 +36,7 @@ class EventRepository
 
     public function updateOrCreateEvent(Event $event): Event
     {
-        $eventDataModel = EventDataModel::updateOrCreate(
+        EventDataModel::updateOrCreate(
             [
                 'site_name' => $event->getSiteName(),
                 'event_id' => $event->getEventId()
@@ -37,7 +45,7 @@ class EventRepository
                 'title' => $event->getTitle(),
                 'catch' => $event->getCatch(),
                 'description' => $event->getDescription(),
-                'prefecture_id' => $event->getPrefectureId(),
+                'prefecture_id' => $event->getPrefectureId()->value(),
                 'started_at' => $event->getStartedAt(),
                 'ended_at' => $event->getEndedAt(),
                 'event_url' => $event->getEventUrl(),
@@ -57,7 +65,37 @@ class EventRepository
                 'event_updated_at' => $event->getEventUpdatedAt(),
             ]
         );
-        $event->setId($eventDataModel->id);
+        return $event;
+    }
+
+    private function convertDataModelToEntity(EventDataModel $eventDataModel): Event
+    {
+        $event = new Event(
+            $eventDataModel->id,
+            $eventDataModel->site_name,
+            $eventDataModel->event_id,
+            $eventDataModel->title,
+            $eventDataModel->catch,
+            $eventDataModel->description,
+            $eventDataModel->event_url,
+            $eventDataModel->prefecture_id ? new PrefectureId($eventDataModel->prefecture_id) : null,
+            $eventDataModel->address,
+            $eventDataModel->place,
+            $eventDataModel->lat,
+            $eventDataModel->lon,
+            $eventDataModel->startd_at ? new \DateTime($eventDataModel->started_at) : null,
+            $eventDataModel->ended_at ? new \DateTime($eventDataModel->ended_at) : null,
+            $eventDataModel->limit,
+            $eventDataModel->participants,
+            $eventDataModel->waiting,
+            $eventDataModel->owner_id,
+            $eventDataModel->owner_nickname,
+            $eventDataModel->owner_twitter_id,
+            $eventDataModel->owner_display_name,
+            $eventDataModel->group_id,
+            $eventDataModel->created_at ? new \DateTime($eventDataModel->event_created_at) : null,
+            $eventDataModel->startd_at ? new \DateTime($eventDataModel->event_updated_at) : null,
+            );
         return $event;
     }
 

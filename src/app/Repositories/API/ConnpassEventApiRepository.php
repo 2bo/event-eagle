@@ -2,12 +2,12 @@
 
 namespace App\Repositories\API;
 
-use App\Domain\Event\ConnpassEvent;
-use App\UseCases\ConnpassEventRepositoryInterface;
+use App\Domain\Models\Event\ConnpassEvent;
+use App\Domain\Models\Event\ConnpassEventRepositoryInterface;
 use App\ApiClients\ApiClient;
 use DateTime;
 
-class ConnpassEventRepository implements ConnpassEventRepositoryInterface
+class ConnpassEventApiRepository implements ConnpassEventRepositoryInterface
 {
     const URL = "https://connpass.com/api/v1/event/";
     const DELAY = 5000.0;
@@ -24,21 +24,27 @@ class ConnpassEventRepository implements ConnpassEventRepositoryInterface
         $domainEvents = [];
 
         foreach ($events as $event) {
-            $domainEvents[] = $this->makeConnpassEventFrom($event);
+            $domainEvents[] = $this->makeConnpassEvent($event);
         }
 
         for ($i = $start + self::COUNT; $i < $resultsAvailable; $i += self::COUNT) {
             $jsonArray = $this->fetchJsonFromApi($ym, $i);
             $events = $jsonArray['events'];
             foreach ($events as $event) {
-                $domainEvents[] = $this->makeConnpassEventFrom($event);
+                $domainEvents[] = $this->makeConnpassEvent($event);
             }
         }
 
         return $domainEvents;
     }
 
-    private function fetchJsonFromApi(string $ym, int $start = 1, int $order = self::ORDER_NEW)
+    public function fetchResultsAvailable(string $ym): int
+    {
+        $jsonArray = $this->fetchJsonFromApi($ym);
+        return $jsonArray['results_available'];
+    }
+
+    private function fetchJsonFromApi(string $ym, int $start = 1, int $order = self::ORDER_NEW): array
     {
         $client = new ApiClient();
         $query = ['ym' => $ym, 'start' => $start, 'order' => $order, 'count' => self::COUNT];
@@ -46,7 +52,7 @@ class ConnpassEventRepository implements ConnpassEventRepositoryInterface
         return json_decode($res, true);
     }
 
-    private function makeConnpassEventFrom($eventJson): ConnpassEvent
+    private function makeConnpassEvent($eventJson): ConnpassEvent
     {
         return new ConnpassEvent(
             null,

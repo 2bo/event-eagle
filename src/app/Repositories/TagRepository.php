@@ -4,7 +4,7 @@
 namespace App\Repositories;
 
 
-use App\Models\Tag;
+use App\DataModels\Tag;
 use Illuminate\Support\Facades\DB;
 
 class TagRepository

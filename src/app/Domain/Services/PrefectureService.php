@@ -1,28 +1,33 @@
 <?php
 
 
-namespace App\Services;
+namespace App\Domain\Services;
 
-use App\Models\Prefecture;
 use App\ApiClients\ApiClient;
+use App\Domain\Models\Prefecture\PrefectureRepositoryInterface;
+use App\Domain\Models\Prefecture\Prefecture;
 
 class PrefectureService
 {
+    private $prefectureRepository;
 
-    //FIXME: 非staticに変更
-    public static function getPrefectureFromAddress(string $address = ''): ?Prefecture
+    public function __construct(PrefectureRepositoryInterface $prefectureRepository)
     {
-        $prefectures = Prefecture::select(['id', 'name'])->get();
+        $this->prefectureRepository = $prefectureRepository;
+    }
+
+    private function getPrefectureFromAddress(string $address = ''): ?Prefecture
+    {
+        $prefectures = $this->prefectureRepository->findAll();
         foreach ($prefectures as $prefecture) {
-            if (mb_strpos($address, $prefecture->name) !== false) {
+            if (mb_strpos($address, $prefecture->getName()) !== false) {
                 return $prefecture;
             }
         }
         return null;
     }
 
-    //FIXME: 非staticに変更
-    public static function getPrefectureFromCoordinates(float $lat, float $lon): ?Prefecture
+    public function getPrefectureFromCoordinates(float $lat, float $lon): ?Prefecture
     {
         $url = config('const.geoapi_url');
         $params = [
@@ -38,7 +43,7 @@ class PrefectureService
 
         //1件目のデータの都道府県名
         $firstPrefectureName = $jsonArray['response']['location'][0]['prefecture'];
-        $prefecture = Prefecture::where('name', $firstPrefectureName)->first();
+        $prefecture = $this->prefectureRepository->findByName($firstPrefectureName);
         return $prefecture;
     }
 

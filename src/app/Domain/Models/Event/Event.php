@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Domain\Event;
+namespace App\Domain\Models\Event;
 
-use App\Models\Prefecture;
+use App\Domain\Models\Prefecture\PrefectureId;
 use DateTime;
 
 class Event
@@ -39,7 +39,7 @@ class Event
         ?string $catch = null,
         ?string $description = null,
         ?string $event_url = null,
-        ?int $prefecture_id = null,
+        ?PrefectureId $prefecture_id = null,
         ?string $address = null,
         ?string $place = null,
         ?float $lat = null,
@@ -85,25 +85,15 @@ class Event
     }
 
 
-    //FIXME Prefectureをドメインに変更
-    public function updatePrefectureId(?Prefecture $prefecture)
+    public function updatePrefectureId(?PrefectureId $prefectureId)
     {
-        $this->prefecture_id = $prefecture ? $prefecture->id : null;
+        $this->prefecture_id = $prefectureId;
     }
 
     /**
-     * Repository以外での呼び出し禁止
-     * @param int $id
+     * @return int
      */
-    public function setId(int $id)
-    {
-        $this->id = $id;
-    }
-
-    /**
-     * @return int|null
-     */
-    public function getId(): ?int
+    public function getId(): int
     {
         return $this->id;
     }

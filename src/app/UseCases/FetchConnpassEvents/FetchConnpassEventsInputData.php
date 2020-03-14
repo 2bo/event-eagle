@@ -1,6 +1,6 @@
 <?php
 
-namespace App\UseCases;
+namespace App\UseCases\FetchConnpassEvents;
 
 
 class FetchConnpassEventsInputData

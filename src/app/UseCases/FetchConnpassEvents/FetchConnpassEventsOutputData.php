@@ -1,7 +1,7 @@
 <?php
 
 
-namespace App\UseCases;
+namespace App\UseCases\FetchConnpassEvents;
 
 
 class FetchConnpassEventsOutputData

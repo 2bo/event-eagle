@@ -4,7 +4,7 @@
 namespace App\Services;
 
 
-use App\Models\Event;
+use App\DataModels\Event;
 use Carbon\Carbon;
 use App\ApiClients\ApiClient;
 

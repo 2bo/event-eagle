@@ -1,22 +1,21 @@
 <?php
 
 
-namespace App\UseCases;
+namespace App\UseCases\FetchConnpassEvents;
 
-
-use App\Repositories\EventRepository;
-use App\Services\PrefectureService;
+use App\Domain\Models\Event\EventRepositoryInterface;
+use App\Domain\Services\PrefectureService;
+use App\Domain\Models\Event\ConnpassEventRepositoryInterface;
 
 class FetchConnpassEventsUseCase implements FetchConnpassEventsUseCaseInterface
 {
     private $connpassEventRepository;
-    //FIXME interface化する
     private $prefectureService;
     private $eventRepository;
 
     public function __construct(ConnpassEventRepositoryInterface $connpassEventRepository,
                                 PrefectureService $prefectureService,
-                                EventRepository $eventRepository)
+                                EventRepositoryInterface $eventRepository)
     {
         $this->connpassEventRepository = $connpassEventRepository;
         $this->prefectureService = $prefectureService;
@@ -28,9 +27,11 @@ class FetchConnpassEventsUseCase implements FetchConnpassEventsUseCaseInterface
         $events = $this->connpassEventRepository->fetchEvents($input->getYearMonth());
         foreach ($events as $event) {
             $prefecture = $this->prefectureService->getPrefecture($event->getAddress(), $event->getLat(), $event->getLon());
-            $event->updatePrefectureId($prefecture);
+            if ($prefecture) {
+                $event->updatePrefectureId($prefecture->getId());
+            }
             $this->eventRepository->updateOrCreateEvent($event);
         }
-        return  new FetchConnpassEventsOutputData(count($events));
+        return new FetchConnpassEventsOutputData(count($events));
     }
 }

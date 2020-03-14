@@ -2,8 +2,8 @@
 
 namespace App\Console\Commands;
 
-use App\UseCases\FetchConnpassEventsInputData;
-use App\UseCases\FetchConnpassEventsUseCaseInterface;
+use App\UseCases\FetchConnpassEvents\FetchConnpassEventsInputData;
+use App\UseCases\FetchConnpassEvents\FetchConnpassEventsUseCaseInterface;
 use Illuminate\Console\Command;
 
 class FetchConnpassEvents extends Command

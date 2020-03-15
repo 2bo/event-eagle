@@ -45,7 +45,7 @@ class EventRepository implements EventRepositoryInterface
                 'title' => $event->getTitle(),
                 'catch' => $event->getCatch(),
                 'description' => $event->getDescription(),
-                'prefecture_id' => $event->getPrefectureId()->value(),
+                'prefecture_id' => $event->getPrefectureId() ? $event->getPrefectureId()->value() : null,
                 'started_at' => $event->getStartedAt(),
                 'ended_at' => $event->getEndedAt(),
                 'event_url' => $event->getEventUrl(),

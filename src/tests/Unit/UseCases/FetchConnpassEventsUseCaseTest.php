@@ -37,7 +37,7 @@ class FetchConnpassEventsUseCaseTest extends TestCase
         $mockEvents = $this->getConnpassApiRepositoryMockReturnData();
         $connpassApiRepoMock = Mockery::mock(ConnpassEventApiRepository::class);
         $connpassApiRepoMock->shouldReceive('fetchEvents')->andReturn($mockEvents);
-        $this->app->bind(ConnpassEventRepositoryInterface::class, function () use ($connpassApiRepoMock) {
+        $this->app->singleton(ConnpassEventRepositoryInterface::class, function () use ($connpassApiRepoMock) {
             return $connpassApiRepoMock;
         });
 

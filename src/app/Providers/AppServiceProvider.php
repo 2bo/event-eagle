@@ -23,9 +23,9 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        $this->app->bind(PrefectureRepositoryInterface::class, PrefectureRepository::class);
-        $this->app->bind(EventRepositoryInterface::class, EventRepository::class);
-        $this->app->bind(ConnpassEventRepositoryInterface::class, ConnpassEventApiRepository::class);
+        $this->app->singleton(EventRepositoryInterface::class, EventRepository::class);
+        $this->app->singleton(PrefectureRepositoryInterface::class, PrefectureRepository::class);
+        $this->app->singleton(ConnpassEventRepositoryInterface::class, ConnpassEventApiRepository::class);
 
         $this->app->bind(FetchAtndEventUseCaseInterface::class, FetchAtndEventUseCase::class);
         $this->app->bind(FetchConnpassEventsUseCaseInterface::class, FetchConnpassEventsUseCase::class);

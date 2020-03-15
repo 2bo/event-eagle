@@ -1,6 +1,5 @@
 <?php
 
-
 namespace App\UseCases\FetchConnpassEvents;
 
 interface FetchConnpassEventsUseCaseInterface

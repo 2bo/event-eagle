@@ -1,6 +1,5 @@
 <?php
 
-
 namespace App\Domain\Models\Prefecture;
 
 class PrefectureId

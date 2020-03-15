@@ -11,8 +11,6 @@ use App\Repositories\PrefectureRepository;
 use App\UseCases\FetchConnpassEvents\FetchConnpassEventsUseCase;
 use App\UseCases\FetchConnpassEvents\FetchConnpassEventsUseCaseInterface;
 use Illuminate\Support\ServiceProvider;
-use App\UseCases\FetchAtndEventUseCaseInterface;
-use App\UseCases\FetchAtndEventUseCase;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -27,7 +25,6 @@ class AppServiceProvider extends ServiceProvider
         $this->app->singleton(PrefectureRepositoryInterface::class, PrefectureRepository::class);
         $this->app->singleton(ConnpassEventRepositoryInterface::class, ConnpassEventApiRepository::class);
 
-        $this->app->bind(FetchAtndEventUseCaseInterface::class, FetchAtndEventUseCase::class);
         $this->app->bind(FetchConnpassEventsUseCaseInterface::class, FetchConnpassEventsUseCase::class);
     }
 

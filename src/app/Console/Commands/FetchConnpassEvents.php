@@ -29,10 +29,10 @@ class FetchConnpassEvents extends Command
      *
      * @return void
      */
-    public function __construct(FetchConnpassEventsUseCaseInterface $fetchAtndEventUseCase)
+    public function __construct(FetchConnpassEventsUseCaseInterface $fetchConnpassEventUseCase)
     {
         parent::__construct();
-        $this->fetchConnpassEventUseCase = $fetchAtndEventUseCase;
+        $this->fetchConnpassEventUseCase = $fetchConnpassEventUseCase;
     }
 
     /**

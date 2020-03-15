@@ -1,6 +1,5 @@
 <?php
 
-
 namespace App\Domain\Services;
 
 use App\ApiClients\ApiClient;

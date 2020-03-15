@@ -1,8 +1,6 @@
 <?php
 
-
 namespace App\Repositories;
-
 
 use App\DataModels\Tag;
 use Illuminate\Support\Facades\DB;

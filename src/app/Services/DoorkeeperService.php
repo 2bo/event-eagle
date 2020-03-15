@@ -1,8 +1,6 @@
 <?php
 
-
 namespace App\Services;
-
 
 use App\DataModels\Event;
 use Carbon\Carbon;

@@ -2,10 +2,8 @@
 
 namespace App\Console\Commands;
 
-use App\Models\Tag;
 use Illuminate\Console\Command;
-use Illuminate\Support\Facades\Config;
-use App\Models\Event;
+use App\DataModels\Event;
 use Illuminate\Support\Facades\DB;
 
 class TaggingForEvents extends Command

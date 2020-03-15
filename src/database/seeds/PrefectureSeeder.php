@@ -1,7 +1,7 @@
 <?php
 
 use Illuminate\Database\Seeder;
-use App\Models\Prefecture;
+use App\DataModels\Prefecture;
 
 class PrefectureSeeder extends Seeder
 {

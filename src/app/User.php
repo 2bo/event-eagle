@@ -1,5 +1,6 @@
 <?php
 
+//FIXME: namespaceをApp\DataModelsに変更する
 namespace App;
 
 use Illuminate\Notifications\Notifiable;

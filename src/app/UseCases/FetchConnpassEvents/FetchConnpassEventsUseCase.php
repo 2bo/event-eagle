@@ -22,7 +22,7 @@ class FetchConnpassEventsUseCase implements FetchConnpassEventsUseCaseInterface
         $this->eventRepository = $eventRepository;
     }
 
-    public function handle(FetchConnpassEventsInputData $input)
+    public function handle(FetchConnpassEventsInputData $input): FetchConnpassEventsOutputData
     {
         $events = $this->connpassEventRepository->fetchEvents($input->getYearMonth());
         foreach ($events as $event) {

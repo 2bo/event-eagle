@@ -41,7 +41,7 @@ class FetchConnpassEventsUseCaseTest extends TestCase
             return $connpassApiRepoMock;
         });
 
-        $input = new FetchConnpassEventsInputData('2020');
+        $input = new FetchConnpassEventsInputData('202003');
         $useCase = app(FetchConnpassEventsUseCase::class);
         $output = $useCase->handle($input);
 

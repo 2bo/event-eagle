@@ -52,7 +52,7 @@ class DoorkeeperEvent extends Event
             null,
             null,
             null,
-           null,
+            null,
             $group,
             $published_at,
             $updated_at

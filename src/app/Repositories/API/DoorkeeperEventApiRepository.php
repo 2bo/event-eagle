@@ -47,8 +47,9 @@ class DoorkeeperEventApiRepository implements DoorkeeperEventRepositoryInterface
     private function fetchJsonFromApi(\DateTime $since, \DateTime $until, int $page = 1,
                                       string $sort = self::SORT_STARTS_AT, string $locale = self::LOCALE_JA)
     {
-        $sinceInUTC = $since->setTimezone( 'UTC')->format('Y-m-d\TH:i:s\Z');
-        $untilInUTC = $until->setTimezone('UTC')->format('Y-m-d\TH:i:s\Z');
+        $utc = new \DateTimeZone('UTC');
+        $sinceInUTC = $since->setTimezone($utc)->format('Y-m-d\TH:i:s\Z');
+        $untilInUTC = $until->setTimezone($utc)->format('Y-m-d\TH:i:s\Z');
         $params = [
             'since' => $sinceInUTC,
             'until' => $untilInUTC,

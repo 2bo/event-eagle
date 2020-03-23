@@ -50,6 +50,9 @@ class FetchConnpassEventsUseCaseTest extends TestCase
         $events = $eventsRepository->findAll();
         self::assertEquals(count($mockEvents), $output->getNumOfEvents());
         self::assertEquals(count($mockEvents), count($events));
+
+        self::assertTrue($events[0]->isOnline());
+        self::assertNotNull($events[0]->getPrefectureId());
     }
 
     private function getConnpassApiRepositoryMockReturnData(): array
@@ -59,7 +62,7 @@ class FetchConnpassEventsUseCaseTest extends TestCase
             $events[] = new ConnpassEvent(
                 null,
                 $i + 1,
-                'title' . $i,
+                'オンライン' . $i,
                 'catch' . $i,
                 'description' . $i,
                 'http://example.com/' . $i,

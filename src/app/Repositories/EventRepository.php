@@ -7,8 +7,6 @@ use App\DataModels\Event as EventDataModel;
 use App\Domain\Models\Event\Event;
 use App\Domain\Models\Prefecture\PrefectureId;
 use Illuminate\Support\Facades\DB;
-use App\Domain\Services\PrefectureService;
-use Carbon\Carbon;
 
 class EventRepository implements EventRepositoryInterface
 {
@@ -63,6 +61,7 @@ class EventRepository implements EventRepositoryInterface
                 'waiting' => $event->getWaiting(),
                 'event_created_at' => $event->getEventCreatedAt(),
                 'event_updated_at' => $event->getEventUpdatedAt(),
+                'is_online' => $event->isOnline(),
             ]
         );
         return $event;
@@ -95,6 +94,7 @@ class EventRepository implements EventRepositoryInterface
             $eventDataModel->group_id,
             $eventDataModel->created_at ? new \DateTime($eventDataModel->event_created_at) : null,
             $eventDataModel->startd_at ? new \DateTime($eventDataModel->event_updated_at) : null,
+            $eventDataModel->is_online ? true : false,
             );
         return $event;
     }

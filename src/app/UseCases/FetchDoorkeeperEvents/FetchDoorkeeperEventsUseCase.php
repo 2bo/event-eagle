@@ -34,6 +34,8 @@ class FetchDoorkeeperEventsUseCase implements FetchDoorkeeperEventsUseCaseInterf
                 $event->updatePrefectureId($prefecture->getId());
             }
 
+            $event->updateIsOnline();
+
             $this->eventRepository->updateOrCreateEvent($event);
         }
         return new FetchDoorkeeperEventsOutputData(count($events));

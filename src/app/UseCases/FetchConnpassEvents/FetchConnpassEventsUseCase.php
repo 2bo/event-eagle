@@ -30,6 +30,7 @@ class FetchConnpassEventsUseCase implements FetchConnpassEventsUseCaseInterface
             if ($prefecture) {
                 $event->updatePrefectureId($prefecture->getId());
             }
+            $event->updateIsOnline();
             $this->eventRepository->updateOrCreateEvent($event);
         }
         return new FetchConnpassEventsOutputData(count($events));

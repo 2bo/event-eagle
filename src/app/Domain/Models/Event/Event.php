@@ -30,6 +30,7 @@ class Event
     private $group_id;
     private $event_created_at;
     private $event_updated_at;
+    private $is_online;
 
     public function __construct(
         ?int $id,
@@ -55,7 +56,8 @@ class Event
         ?string $owner_display_name = null,
         ?string $group_id = null,
         ?DateTime $event_created_at = null,
-        ?DateTime $event_updated_at = null
+        ?DateTime $event_updated_at = null,
+        bool $is_online = false
     )
     {
         $this->id = $id;
@@ -82,6 +84,7 @@ class Event
         $this->group_id = $group_id;
         $this->event_created_at = $event_created_at;
         $this->event_updated_at = $event_updated_at;
+        $this->is_online = $is_online;
     }
 
 
@@ -282,5 +285,38 @@ class Event
         return $this->event_updated_at;
     }
 
+    /**
+     * @return bool
+     */
+    public function isOnline(): bool
+    {
+        return $this->is_online;
+    }
+
+    public function updateIsOnline()
+    {
+        $onlineKeywords = [
+            'online',
+            'オンライン',
+            'remote',
+            'リモート',
+            'Zoom',
+            'Skype',
+            'Discord',
+            'Hangout'
+        ];
+
+        $targets = ['title', 'catch', 'description'];
+
+        foreach ($onlineKeywords as $keyword) {
+            foreach ($targets as $target) {
+                if (mb_stripos($this->$target, $keyword) !== false) {
+                    $this->is_online = true;
+                    return;
+                }
+            }
+        }
+
+    }
 
 }

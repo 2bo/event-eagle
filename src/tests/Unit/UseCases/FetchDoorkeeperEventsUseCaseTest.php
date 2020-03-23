@@ -49,6 +49,9 @@ class FetchDoorkeeperEventsUseCaseTest extends TestCase
         $events = $eventsRepository->findAll();
         self::assertEquals(count($mockEvents), $output->getNumOfEvents());
         self::assertEquals(count($mockEvents), count($events));
+
+        self::assertTrue($events[0]->isOnline());
+        self::assertNotNull($events[0]->getPrefectureId());
     }
 
     private function getDoorkeeperApiRepositoryMockReturnData(): array
@@ -58,11 +61,11 @@ class FetchDoorkeeperEventsUseCaseTest extends TestCase
             $events[] = new DoorkeeperEvent(
                 null,
                 $i + 1,
-                'title' . $i,
+                'titleオンライン' . $i,
                 new \DateTime('2020-01-01 10:00:00'),
                 new \DateTime('2020-01-01 12:00:00'),
                 'venue_name' . $i,
-                'address' . $i,
+                '東京都' . $i,
                 0.1,
                 0.2,
                 10,

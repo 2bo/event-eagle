@@ -10,6 +10,6 @@ class Tag extends Model
 
     public function events()
     {
-        return $this->belongsToMany('App\Models\Event')->withTimestamps();
+        return $this->belongsToMany(Event::class)->withTimestamps();
     }
 }

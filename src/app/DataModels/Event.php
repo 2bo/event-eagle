@@ -6,8 +6,6 @@ use Illuminate\Database\Eloquent\Model;
 
 class Event extends Model
 {
-    public const DOORKEEPER = 'doorkeeper';
-
     protected $guarded = [
         'id'
     ];
@@ -15,5 +13,10 @@ class Event extends Model
     public function tags()
     {
         return $this->belongsToMany(Tag::class)->withTimestamps();
+    }
+
+    public function types()
+    {
+        return $this->belongsToMany(EventType::class)->withTimestamps();
     }
 }

@@ -29,7 +29,7 @@ class EventService
         foreach ($this->allEventTypes as $eventType) {
             $needle = $eventType->getNeedle();
             foreach ($targets as $target) {
-                if (preg_match("/{$needle}/i", $target)) {
+                if (preg_match("/{$needle}/", $target)) {
                     $eventTypes[] = $eventType;
                     break;
                 }

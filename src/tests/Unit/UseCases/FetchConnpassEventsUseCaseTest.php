@@ -6,6 +6,7 @@ use App\Domain\Models\Event\ConnpassEvent;
 use App\Domain\Models\Event\ConnpassEventRepositoryInterface;
 use App\Repositories\API\ConnpassEventApiRepository;
 use App\Repositories\EventRepository;
+use App\Repositories\EventTypeRepository;
 use App\UseCases\FetchConnpassEvents\FetchConnpassEventsInputData;
 use App\UseCases\FetchConnpassEvents\FetchConnpassEventsUseCase;
 use Illuminate\Support\Facades\Artisan;
@@ -27,7 +28,7 @@ class FetchConnpassEventsUseCaseTest extends TestCase
     private static function initializeDb()
     {
         Artisan::call('migrate:refresh');
-        Artisan::call('db:seed --class PrefectureSeeder');
+        Artisan::call('db:seed');
         self::$isDbInitialized = true;
     }
 
@@ -53,11 +54,15 @@ class FetchConnpassEventsUseCaseTest extends TestCase
 
         self::assertTrue($events[0]->isOnline());
         self::assertNotNull($events[0]->getPrefectureId());
+        self::assertEquals(8, count($events[0]->getTypes()));
     }
 
     private function getConnpassApiRepositoryMockReturnData(): array
     {
         $events = [];
+        $typeRepository = new EventTypeRepository();
+        $types = $typeRepository->all();
+
         for ($i = 0; $i < 3; $i++) {
             $events[] = new ConnpassEvent(
                 null,
@@ -80,7 +85,8 @@ class FetchConnpassEventsUseCaseTest extends TestCase
                 'owner_nickname' . $i,
                 'owner_display_name' . $i,
                 $i,
-                new \DateTime()
+                new \DateTime(),
+                $types
             );
         }
         return $events;

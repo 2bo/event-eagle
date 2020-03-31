@@ -7,6 +7,7 @@ namespace App\Repositories\API;
 use App\ApiClients\ApiClient;
 use App\Domain\Models\Event\DoorkeeperEvent;
 use App\Domain\Models\Event\DoorkeeperEventRepositoryInterface;
+use App\Domain\Models\Event\EventService;
 
 class DoorkeeperEventApiRepository implements DoorkeeperEventRepositoryInterface
 {
@@ -20,10 +21,12 @@ class DoorkeeperEventApiRepository implements DoorkeeperEventRepositoryInterface
     private const EXPAND_GROUP = 'group';
 
     private $apiToken;
+    private $eventService;
 
     public function __construct()
     {
         $this->apiToken = config('env.doorkeeper_api_token');
+        $this->eventService = app(EventService::class);
     }
 
     public function fetchEvents(\DateTime $since, \DateTime $until, int $page = 1): array
@@ -68,6 +71,8 @@ class DoorkeeperEventApiRepository implements DoorkeeperEventRepositoryInterface
 
     private function makeDoorkeeperEvent($eventJson): DoorkeeperEvent
     {
+        $eventTypes = $this->eventService->getEventTypesFrom($eventJson['title'], null, $eventJson['description']);
+
         return new DoorkeeperEvent(
             null,
             $eventJson['id'],
@@ -86,7 +91,8 @@ class DoorkeeperEventApiRepository implements DoorkeeperEventRepositoryInterface
             $eventJson['public_url'],
             $eventJson['participants'],
             $eventJson['waitlisted'],
-            null
+            null,
+            $eventTypes
         );
     }
 

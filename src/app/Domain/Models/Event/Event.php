@@ -31,6 +31,7 @@ class Event
     private $event_created_at;
     private $event_updated_at;
     private $is_online;
+    private $types;
 
     public function __construct(
         ?int $id,
@@ -57,7 +58,8 @@ class Event
         ?string $group_id = null,
         ?DateTime $event_created_at = null,
         ?DateTime $event_updated_at = null,
-        bool $is_online = false
+        bool $is_online = false,
+        array $types = []
     )
     {
         $this->id = $id;
@@ -85,6 +87,7 @@ class Event
         $this->event_created_at = $event_created_at;
         $this->event_updated_at = $event_updated_at;
         $this->is_online = $is_online;
+        $this->setEventTypes($types);
     }
 
 
@@ -92,6 +95,45 @@ class Event
     {
         $this->prefecture_id = $prefectureId;
     }
+
+    public function setEventTypes(array $eventTypes = [])
+    {
+        if (!$eventTypes) {
+            $this->types = [];
+            return;
+        }
+        foreach ($eventTypes as $eventType) {
+            if (is_a($eventType, EventType::class)) {
+                $this->types[] = $eventType;
+            }
+        }
+    }
+
+    public function updateIsOnline()
+    {
+        $onlineKeywords = [
+            'online',
+            'オンライン',
+            'remote',
+            'リモート',
+            'Zoom',
+            'Skype',
+            'Discord',
+            'Hangout'
+        ];
+
+        $targets = ['title', 'catch', 'description'];
+
+        foreach ($onlineKeywords as $keyword) {
+            foreach ($targets as $target) {
+                if (mb_stripos($this->$target, $keyword) !== false) {
+                    $this->is_online = true;
+                    return;
+                }
+            }
+        }
+    }
+
 
     /**
      * @return int
@@ -293,30 +335,12 @@ class Event
         return $this->is_online;
     }
 
-    public function updateIsOnline()
+    /**
+     * @return array
+     */
+    public function getTypes(): array
     {
-        $onlineKeywords = [
-            'online',
-            'オンライン',
-            'remote',
-            'リモート',
-            'Zoom',
-            'Skype',
-            'Discord',
-            'Hangout'
-        ];
-
-        $targets = ['title', 'catch', 'description'];
-
-        foreach ($onlineKeywords as $keyword) {
-            foreach ($targets as $target) {
-                if (mb_stripos($this->$target, $keyword) !== false) {
-                    $this->is_online = true;
-                    return;
-                }
-            }
-        }
-
+        return $this->types;
     }
 
 }

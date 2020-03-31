@@ -2,6 +2,7 @@
 
 namespace Tests\Repositories\Unit;
 
+use App\Domain\Models\Event\EventType;
 use App\Domain\Models\Prefecture\PrefectureId;
 use App\Domain\Models\Event\Event;
 use Illuminate\Support\Facades\Artisan;
@@ -26,6 +27,7 @@ class EventRepositoryTest extends TestCase
     private static function initializeDb()
     {
         Artisan::call('migrate:refresh');
+        Artisan::call('db:seed --class=EventTypeSeeder');
         self::$isDbInitialized = true;
     }
 
@@ -56,6 +58,10 @@ class EventRepositoryTest extends TestCase
         $eventCreatedAt = new DateTime('2020-01-01 15:00:00');
         $eventUpdatedAt = new DateTime('2020-01-01 20:00:00');
         $isOnline = true;
+        $types = [
+            new EventType(1, 'name', 'needle'),
+            new EventType(2, 'name', 'needle')
+        ];
 
         $event = new Event(
             null,
@@ -82,8 +88,9 @@ class EventRepositoryTest extends TestCase
             $group_id,
             $eventCreatedAt,
             $eventUpdatedAt,
-            $isOnline
-            );
+            $isOnline,
+            $types
+        );
 
         $eventRepository = new EventRepository();
         $eventRepository->updateOrCreateEvent($event);
@@ -113,5 +120,6 @@ class EventRepositoryTest extends TestCase
         self::assertEquals($eventCreatedAt->format('Y-m-d H:i:s'), $eventDataModel->event_created_at);
         self::assertEquals($eventUpdatedAt->format('Y-m-d H:i:s'), $eventDataModel->event_updated_at);
         self::assertEquals($isOnline, $eventDataModel->is_online);
+        self::assertEquals(count($types), count($eventDataModel->types()->get()));
     }
 }

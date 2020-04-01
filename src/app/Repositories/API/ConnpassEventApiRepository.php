@@ -76,8 +76,8 @@ class ConnpassEventApiRepository implements ConnpassEventRepositoryInterface
             $eventJson['place'],
             $eventJson['lat'],
             $eventJson['lon'],
-            new DateTime($eventJson['started_at']),
-            new DateTime($eventJson['ended_at']),
+            $eventJson['started_at'] ? new DateTime($eventJson['started_at']) : null,
+            $eventJson['ended_at'] ? new DateTime($eventJson['ended_at']) : null,
             $eventJson['limit'],
             $eventJson['accepted'],
             $eventJson['waiting'],
@@ -85,7 +85,7 @@ class ConnpassEventApiRepository implements ConnpassEventRepositoryInterface
             $eventJson['owner_nickname'],
             $eventJson['owner_display_name'],
             $eventJson['series']['id'],
-            new DateTime($eventJson['updated_at']),
+            $eventJson['updated_at'] ? new DateTime($eventJson['updated_at']) : null,
             $eventTypes
         );
     }

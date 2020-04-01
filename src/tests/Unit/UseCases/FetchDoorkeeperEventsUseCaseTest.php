@@ -6,6 +6,7 @@ use App\Domain\Models\Event\DoorkeeperEvent;
 use App\Domain\Models\Event\DoorkeeperEventRepositoryInterface;
 use App\Repositories\API\DoorkeeperEventApiRepository;
 use App\Repositories\EventRepository;
+use App\Repositories\EventTypeRepository;
 use App\UseCases\FetchDoorkeeperEvents\FetchDoorkeeperEventsInputData;
 use App\UseCases\FetchDoorkeeperEvents\FetchDoorkeeperEventsUseCase;
 use Illuminate\Support\Facades\Artisan;
@@ -27,7 +28,7 @@ class FetchDoorkeeperEventsUseCaseTest extends TestCase
     private static function initializeDb()
     {
         Artisan::call('migrate:refresh');
-        Artisan::call('db:seed --class PrefectureSeeder');
+        Artisan::call('db:seed');
         self::$isDbInitialized = true;
     }
 
@@ -52,11 +53,15 @@ class FetchDoorkeeperEventsUseCaseTest extends TestCase
 
         self::assertTrue($events[0]->isOnline());
         self::assertNotNull($events[0]->getPrefectureId());
+        self::assertEquals(8, count($events[0]->getTypes()));
     }
 
     private function getDoorkeeperApiRepositoryMockReturnData(): array
     {
         $events = [];
+        $typeRepository = new EventTypeRepository();
+        $types = $typeRepository->all();
+
         for ($i = 0; $i < 3; $i++) {
             $events[] = new DoorkeeperEvent(
                 null,
@@ -77,7 +82,8 @@ class FetchDoorkeeperEventsUseCaseTest extends TestCase
                 5,
                 5,
                 null,
-                );
+                $types
+            );
         }
         return $events;
     }

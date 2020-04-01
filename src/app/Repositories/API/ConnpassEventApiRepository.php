@@ -5,10 +5,18 @@ namespace App\Repositories\API;
 use App\Domain\Models\Event\ConnpassEvent;
 use App\Domain\Models\Event\ConnpassEventRepositoryInterface;
 use App\ApiClients\ApiClient;
+use App\Domain\Models\Event\EventService;
 use DateTime;
 
 class ConnpassEventApiRepository implements ConnpassEventRepositoryInterface
 {
+    private $eventService;
+
+    public function __construct()
+    {
+        $this->eventService = app(EventService::class);
+    }
+
     const URL = "https://connpass.com/api/v1/event/";
     const DELAY = 5000.0;
     const COUNT = 100; //1回のAPIアクセスで取得するイベント件数
@@ -54,6 +62,8 @@ class ConnpassEventApiRepository implements ConnpassEventRepositoryInterface
 
     private function makeConnpassEvent($eventJson): ConnpassEvent
     {
+        $eventTypes = $this->eventService->getEventTypesFrom($eventJson['title'], $eventJson['catch'], $eventJson['description']);
+
         return new ConnpassEvent(
             null,
             $eventJson['event_id'],
@@ -66,8 +76,8 @@ class ConnpassEventApiRepository implements ConnpassEventRepositoryInterface
             $eventJson['place'],
             $eventJson['lat'],
             $eventJson['lon'],
-            new DateTime($eventJson['started_at']),
-            new DateTime($eventJson['ended_at']),
+            $eventJson['started_at'] ? new DateTime($eventJson['started_at']) : null,
+            $eventJson['ended_at'] ? new DateTime($eventJson['ended_at']) : null,
             $eventJson['limit'],
             $eventJson['accepted'],
             $eventJson['waiting'],
@@ -75,7 +85,8 @@ class ConnpassEventApiRepository implements ConnpassEventRepositoryInterface
             $eventJson['owner_nickname'],
             $eventJson['owner_display_name'],
             $eventJson['series']['id'],
-            new DateTime($eventJson['updated_at'])
+            $eventJson['updated_at'] ? new DateTime($eventJson['updated_at']) : null,
+            $eventTypes
         );
     }
 }

@@ -4,16 +4,31 @@ namespace Tests\Unit\Services;
 
 use App\Domain\Services\PrefectureService;
 use App\Repositories\PrefectureRepository;
+use Illuminate\Support\Facades\Artisan;
 use Tests\TestCase;
 
 class PrefectureServiceTest extends TestCase
 {
     static private $prefectureService;
 
-    public static function setUpBeforeClass()
+    static private $isDbInitialized = false;
+
+    public function setUp(): void
     {
-        self::$prefectureService = new PrefectureService(new PrefectureRepository());
+        parent::setUp();
+        if (!self::$isDbInitialized) {
+            self::initializeDb();
+        }
     }
+
+    private static function initializeDb()
+    {
+        Artisan::call('migrate:refresh');
+        Artisan::call('db:seed --class=PrefectureSeeder');
+        self::$prefectureService = new PrefectureService(new PrefectureRepository());
+        self::$isDbInitialized = true;
+    }
+
 
     function testGetPrefecture()
     {

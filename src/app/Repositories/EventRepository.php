@@ -5,6 +5,7 @@ namespace App\Repositories;
 use App\Domain\Models\Event\EventRepositoryInterface;
 use App\DataModels\Event as EventDataModel;
 use App\Domain\Models\Event\Event;
+use App\Domain\Models\Event\EventType;
 use App\Domain\Models\Prefecture\PrefectureId;
 use Illuminate\Support\Facades\DB;
 
@@ -14,7 +15,7 @@ class EventRepository implements EventRepositoryInterface
     public function findAll(): array
     {
         $events = [];
-        $dataModels = EventDataModel::all();
+        $dataModels = EventDataModel::with('types')->get();
         foreach ($dataModels as $dataModel) {
             $events[] = $this->convertDataModelToEntity($dataModel);
         }
@@ -34,7 +35,7 @@ class EventRepository implements EventRepositoryInterface
 
     public function updateOrCreateEvent(Event $event): Event
     {
-        EventDataModel::updateOrCreate(
+        $dataModel = EventDataModel::updateOrCreate(
             [
                 'site_name' => $event->getSiteName(),
                 'event_id' => $event->getEventId()
@@ -64,11 +65,23 @@ class EventRepository implements EventRepositoryInterface
                 'is_online' => $event->isOnline(),
             ]
         );
+
+        $typeIds = [];
+        $types = $event->getTypes();
+        foreach ($types as $type) {
+            $typeIds[] = $type->getId();
+        }
+        $dataModel->types()->sync($typeIds);
         return $event;
     }
 
     private function convertDataModelToEntity(EventDataModel $eventDataModel): Event
     {
+        $types = [];
+        foreach ($eventDataModel->types as $type) {
+            $types[] = new EventType($type->id, $type->name, $type->needle);
+        }
+
         $event = new Event(
             $eventDataModel->id,
             $eventDataModel->site_name,
@@ -95,7 +108,8 @@ class EventRepository implements EventRepositoryInterface
             $eventDataModel->created_at ? new \DateTime($eventDataModel->event_created_at) : null,
             $eventDataModel->startd_at ? new \DateTime($eventDataModel->event_updated_at) : null,
             $eventDataModel->is_online ? true : false,
-            );
+            $types
+        );
         return $event;
     }
 

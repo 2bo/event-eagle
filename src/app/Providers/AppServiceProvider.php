@@ -5,10 +5,12 @@ namespace App\Providers;
 use App\Domain\Models\Event\ConnpassEventRepositoryInterface;
 use App\Domain\Models\Event\DoorkeeperEventRepositoryInterface;
 use App\Domain\Models\Event\EventRepositoryInterface;
+use App\Domain\Models\Event\EventTypeRepositoryInterface;
 use App\Domain\Models\Prefecture\PrefectureRepositoryInterface;
 use App\Repositories\API\ConnpassEventApiRepository;
 use App\Repositories\API\DoorkeeperEventApiRepository;
 use App\Repositories\EventRepository;
+use App\Repositories\EventTypeRepository;
 use App\Repositories\PrefectureRepository;
 use App\UseCases\FetchConnpassEvents\FetchConnpassEventsUseCase;
 use App\UseCases\FetchConnpassEvents\FetchConnpassEventsUseCaseInterface;
@@ -27,6 +29,7 @@ class AppServiceProvider extends ServiceProvider
     {
         $this->app->singleton(EventRepositoryInterface::class, EventRepository::class);
         $this->app->singleton(PrefectureRepositoryInterface::class, PrefectureRepository::class);
+        $this->app->singleton(EventTypeRepositoryInterface::class, EventTypeRepository::class);
 
         $this->app->singleton(ConnpassEventRepositoryInterface::class, ConnpassEventApiRepository::class);
         $this->app->singleton(DoorkeeperEventRepositoryInterface::class, DoorkeeperEventApiRepository::class);

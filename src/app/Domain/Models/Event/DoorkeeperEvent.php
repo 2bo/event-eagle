@@ -28,7 +28,8 @@ class DoorkeeperEvent extends Event
         ?string $public_url = null,
         ?int $participants = null,
         ?int $waitlisted = null,
-        ?PrefectureId $prefecture_id = null
+        ?PrefectureId $prefecture_id = null,
+        ?array $types = []
     )
     {
         parent::__construct(
@@ -55,7 +56,9 @@ class DoorkeeperEvent extends Event
             null,
             $group,
             $published_at,
-            $updated_at
+            $updated_at,
+            false,
+            $types
         );
     }
 }

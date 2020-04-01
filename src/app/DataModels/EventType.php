@@ -4,10 +4,8 @@ namespace App\DataModels;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Tag extends Model
+class EventType extends Model
 {
-    protected $guarded = ['id'];
-
     public function events()
     {
         return $this->belongsToMany(Event::class)->withTimestamps();

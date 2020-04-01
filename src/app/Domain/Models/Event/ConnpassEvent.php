@@ -31,7 +31,8 @@ class ConnpassEvent extends Event
         ?string $owner_nickname = null,
         ?string $owner_display_name = null,
         ?string $group_id = null,
-        ?DateTime $event_updated_at = null
+        ?DateTime $event_updated_at = null,
+        array $types = []
     )
     {
         parent::__construct(
@@ -58,7 +59,9 @@ class ConnpassEvent extends Event
             $owner_display_name,
             $group_id,
             null,
-            $event_updated_at
+            $event_updated_at,
+            false,
+            $types
         );
     }
 

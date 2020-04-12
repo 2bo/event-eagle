@@ -30,8 +30,8 @@ class SearchConditionService
             ];
         }
         $placeConditions[] = [
-            'id' => 'remote',
-            'name' => 'リモート'
+            'id' => 'online',
+            'name' => 'オンライン'
         ];
         return $placeConditions;
     }

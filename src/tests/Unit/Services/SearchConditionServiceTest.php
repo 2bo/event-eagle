@@ -48,7 +48,7 @@ class SearchConditionServiceTest extends TestCase
         $placeConditions = $this->service->getPlaceConditions();
         $repository = new PrefectureRepository();
         $allPrefectures = $repository->findAll();
-        //都道府県+リモート
+        //都道府県+オンライン
         self::assertEquals(count($allPrefectures) + 1, count($placeConditions));
         foreach ($placeConditions as $condition) {
             self::assertArrayHasKey('id', $condition);

@@ -23,16 +23,17 @@ class SearchConditionService
         $prefectures = $this->prefectureRepository->findAll();
         $placeConditions = [];
 
+        $placeConditions[] = [
+            'value' => 'online',
+            'text' => 'オンライン'
+        ];
+
         foreach ($prefectures as $prefecture) {
             $placeConditions[] = [
-                'id' => $prefecture->getId()->value(),
-                'name' => $prefecture->getName(),
+                'value' => $prefecture->getId()->value(),
+                'text' => $prefecture->getName(),
             ];
         }
-        $placeConditions[] = [
-            'id' => 'online',
-            'name' => 'オンライン'
-        ];
         return $placeConditions;
     }
 
@@ -42,8 +43,8 @@ class SearchConditionService
         $eventTypeConditions = [];
         foreach ($eventTypes as $eventType) {
             $eventTypeConditions[] = [
-                'id' => $eventType->getId(),
-                'name' => $eventType->getName(),
+                'value' => $eventType->getId(),
+                'text' => $eventType->getName(),
             ];
         }
         return $eventTypeConditions;

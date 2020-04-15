@@ -38,8 +38,8 @@ class SearchConditionServiceTest extends TestCase
 
         self::assertEquals(count($allEvents), count($eventTypeConditions));
         foreach ($eventTypeConditions as $condition) {
-            self::assertArrayHasKey('id', $condition);
-            self::assertArrayHasKey('name', $condition);
+            self::assertArrayHasKey('value', $condition);
+            self::assertArrayHasKey('text', $condition);
         }
     }
 
@@ -51,8 +51,8 @@ class SearchConditionServiceTest extends TestCase
         //都道府県+オンライン
         self::assertEquals(count($allPrefectures) + 1, count($placeConditions));
         foreach ($placeConditions as $condition) {
-            self::assertArrayHasKey('id', $condition);
-            self::assertArrayHasKey('name', $condition);
+            self::assertArrayHasKey('value', $condition);
+            self::assertArrayHasKey('text', $condition);
         }
     }
 }

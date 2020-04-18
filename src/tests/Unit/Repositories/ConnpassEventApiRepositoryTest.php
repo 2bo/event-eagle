@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Repositories\Unit;
+namespace Tests\Unit\Repositories;
 
 use App\Domain\Models\Event\ConnpassEvent;
 use Tests\TestCase;

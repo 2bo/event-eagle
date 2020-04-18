@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Repositories\Unit;
+namespace Tests\Unit\Repositories;
 
 use App\Domain\Models\Prefecture\Prefecture;
 use App\Domain\Models\Prefecture\PrefectureId;

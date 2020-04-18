@@ -18,3 +18,7 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 });
 
 Route::apiResource('events', 'EventController');
+
+Route::get('/condition/place', 'SearchConditionController@getPlaceConditions');
+Route::get('/condition/type', 'SearchConditionController@getEventTypeConditions');
+

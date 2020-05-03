@@ -5,9 +5,11 @@ namespace Tests\Repositories\Unit;
 use App\Domain\Models\Event\ConnpassEvent;
 use Tests\TestCase;
 use App\Repositories\API\ConnpassEventApiRepository;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class ConnpassEventApiRepositoryTest extends TestCase
 {
+    use RefreshDatabase;
 
     public function testFetchEvent()
     {

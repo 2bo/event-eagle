@@ -2,71 +2,29 @@
 
 namespace App\Http\Controllers;
 
-use App\Repositories\EventRepository;
+use App\UseCases\SearchEvents\SearchEventsInputData;
+use App\UseCases\SearchEvents\SearchEventsUseCaseInterface;
 use Illuminate\Http\Request;
 
 class EventController extends Controller
 {
-    private $eventRepository;
 
-    public function __construct(EventRepository $eventRepository)
+    public function search(Request $request, SearchEventsUseCaseInterface $useCase)
     {
+        $keywords = $request->query('keywords', '');
+        $types = $request->query('types', []);
+        $places = $request->query('places', []);
+        $page = $request->query('page', 1);
 
-        $this->eventRepository = $eventRepository;
-    }
+        $isOnline = false;
+        $index = array_search('online', $places);
+        if ($index !== false) {
+            $isOnline = true;
+            unset($places[$index]);
+        }
 
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index()
-    {
-        return $this->eventRepository->getNewEvents();
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param \Illuminate\Http\Request $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param int $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param \Illuminate\Http\Request $request
-     * @param int $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param int $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-        //
+        $input = new SearchEventsInputData($keywords, $places, $types, $isOnline, $page);
+        $output = $useCase->handle($input);
+        return response()->json($output->getPaginateResult()->toArray());
     }
 }

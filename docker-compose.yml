@@ -49,22 +49,6 @@ services:
     ports:
       - ${DB_PORT}:3306
 
-  db-testing:
-    image: mysql:8.0
-    volumes:
-      - ./docker/mysql/my.cnf:/etc/mysql/conf.d/my.cnf
-    tmpfs:
-      - /var/lib/mysql
-      - /var/log/mysql
-    environment:
-      - MYSQL_DATABASE=${DB_NAME}
-      - MYSQL_USER=${DB_USER}
-      - MYSQL_PASSWORD=${DB_PASS}
-      - MYSQL_ROOT_PASSWORD=${DB_PASS}
-      - TZ=${TZ}
-    ports:
-      - ${DB_TESTING_PORT}:3306
-
   node:
     image: node:12.8-alpine
     volumes:

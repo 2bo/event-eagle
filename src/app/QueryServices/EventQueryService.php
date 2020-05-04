@@ -81,7 +81,15 @@ class EventQueryService implements EventQueryServiceInterface
             $builder->whereRaw('MATCH (title, catch, description, place, address) AGAINST (? IN BOOLEAN MODE)', array($freeText));
         }
         if (!empty($types)) {
-            $builder->whereIn('event_types.id', $types);
+            $builder->whereExists(function ($query) use ($types) {
+                $query->select(DB::raw(1));
+                $query->from('events as sub_events');
+                $query->leftJoin('event_event_type as sub_eet', 'sub_eet.event_id', '=', 'sub_events.id');
+                $query->leftJoin('event_types as sub_event_types', 'sub_event_types.id', '=', 'sub_eet.event_type_id');
+                $query->whereIn('sub_event_types.id', $types);
+                $query->whereRaw('events.id = sub_events.id');
+                return $query;
+            });
         }
         if (!empty($prefectures) && !empty($isOnline)) {
             $builder->where(function ($query) use ($prefectures, $isOnline) {

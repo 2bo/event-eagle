@@ -67,7 +67,7 @@ class PaginateResult
             'total' => $this->total,
             'per_page' => $this->perPage,
             'current_page' => $this->currentPage,
-            'lastPage' => $this->lastPage,
+            'last_page' => $this->lastPage,
             'data' => $this->data
         ];
         return $array;

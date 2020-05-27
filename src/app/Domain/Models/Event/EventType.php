@@ -10,7 +10,7 @@ class EventType
     private $name;
     private $needle;
 
-    public function __construct(int $id, string $name, $needle)
+    public function __construct(int $id, string $name = null, string $needle = null)
     {
         $this->id = $id;
         $this->name = $name;

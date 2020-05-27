@@ -17,7 +17,8 @@ class EventController extends Controller
         $page = $request->query('page', 1);
 
         $isOnline = null;
-        $index = array_search('online', $places);
+        //place=0はオンラインとみなす
+        $index = array_search(0, $places);
         if ($index !== false) {
             $isOnline = true;
             unset($places[$index]);

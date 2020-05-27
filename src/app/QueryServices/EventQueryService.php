@@ -36,7 +36,8 @@ class EventQueryService implements EventQueryServiceInterface
         $events->addSelect('events.event_updated_at');
         $events->addSelect('events.is_online');
         $events->addSelect('prefectures.name');
-        $events->addSelect(DB::raw("group_concat(event_types.name) as event_types"));
+        $events->addSelect(DB::raw("group_concat(DISTINCT event_types.name) as event_types"));
+        $events->addSelect(DB::raw("group_concat(DISTINCT tags.name) as tags"));
         //join
         $events = $this->addJoinTables($events);
         //where
@@ -72,6 +73,8 @@ class EventQueryService implements EventQueryServiceInterface
         $builder->leftJoin('prefectures', 'events.prefecture_id', '=', 'prefectures.id');
         $builder->leftJoin('event_event_type as eet', 'eet.event_id', '=', 'events.id');
         $builder->leftJoin('event_types', 'event_types.id', '=', 'eet.event_type_id');
+        $builder->leftJoin('event_tag', 'events.id', '=', 'event_tag.event_id');
+        $builder->leftJoin('tags', 'tags.id', '=', 'event_tag.tag_id');
         return $builder;
     }
 
@@ -106,7 +109,7 @@ class EventQueryService implements EventQueryServiceInterface
             }
         }
 
-        $now = (new \DateTime())->format('Y-m-d H:i:s');
+        $now = (new \DateTime())->format('Y-m-d 0:0:0');
         $builder->where('events.started_at', '>=', $now);
         return $builder;
     }

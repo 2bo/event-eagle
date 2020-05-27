@@ -24,7 +24,7 @@ class SearchConditionService
         $placeConditions = [];
 
         $placeConditions[] = [
-            'value' => 'online',
+            'value' => 0,
             'text' => 'オンライン'
         ];
 

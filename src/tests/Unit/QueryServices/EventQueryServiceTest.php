@@ -18,7 +18,6 @@ use Tests\TestCase;
 class EventQueryServiceTest extends TestCase
 {
     use RefreshDatabase;
-    static private $isDbInitialized = false;
     static private $queryService;
     static private $eventRepository;
     static private $typeRepository;
@@ -29,16 +28,9 @@ class EventQueryServiceTest extends TestCase
     public function setUp(): void
     {
         parent::setUp();
-        if (!self::$isDbInitialized) {
-            self::initializeDb();
-        }
+        Artisan::call('db:seed');
     }
 
-    private static function initializeDb()
-    {
-        Artisan::call('db:seed');
-        self::$isDbInitialized = true;
-    }
 
     public static function setUpBeforeClass()
     {
@@ -49,6 +41,7 @@ class EventQueryServiceTest extends TestCase
         self::$prefRepository = new PrefectureRepository();
     }
 
+    // 検索結果の取得項目のテスト
     public function testSelect()
     {
         //テストデータの作成
@@ -126,4 +119,50 @@ class EventQueryServiceTest extends TestCase
         self::assertEmpty(array_diff($tagNames, explode(',', $data->tags)));
         self::assertEquals(count($tagNames), count(explode(',', $data->tags)));
     }
+
+    public function testPrefectureCondition()
+    {
+        $startedAt = new DateTime();
+        $endedAt = new DateTime();
+        //テスト用レコードの作成
+        //判定用に$prefecture_idと同じ値をevent_idに設定
+        for ($i = 0; $i < 3; $i++) {
+            $prefectureId = new PrefectureId($i + 1);
+            $event = new Event(null, '', $i + 1,
+                null, null, null, null, $prefectureId,
+                null, null, null, null, $startedAt, $endedAt);
+            self::$eventRepository->updateOrCreateEvent($event);
+        }
+        //一部のデータに合致する検索条件
+        $prefectureCondition = ['1', '3'];
+        $result = self::$queryService->searchEvent(null, $prefectureCondition);
+        $data = $result->getData();
+        self::assertEquals(count($prefectureCondition), $result->getTotal());
+        self::assertEquals(count($prefectureCondition), count($data));
+        // prefecture_idによるソートはしていないので、prefecture_idの集合に差分がないか確認
+        $resultEventIds = array_map(function ($record) {
+            return $record->event_id;
+        }, $data);
+        self::assertEmpty(array_diff($prefectureCondition, $resultEventIds));
+
+        // 全てのデータに合致しない検索条件
+        $prefectureCondition = ['4'];
+        $result = self::$queryService->searchEvent(null, $prefectureCondition);
+        self::assertEquals(0, $result->getTotal());
+        self::assertEmpty($result->getData());
+
+        // 検索条件がnull
+        $prefectureCondition = null;
+        $result = self::$queryService->searchEvent(null, $prefectureCondition);
+        self::assertEquals(3, $result->getTotal());
+        self::assertEquals(3, count($result->getData()));
+
+        // 検索条件がからの配列
+        $prefectureCondition = [];
+        $result = self::$queryService->searchEvent(null, $prefectureCondition);
+        self::assertEquals(3, $result->getTotal());
+        self::assertEquals(3, count($result->getData()));
+
+    }
+
 }

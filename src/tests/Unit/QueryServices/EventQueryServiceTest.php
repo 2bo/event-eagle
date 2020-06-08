@@ -135,7 +135,7 @@ class EventQueryServiceTest extends TestCase
         }
         //一部のデータに合致する検索条件
         $prefectureCondition = ['1', '3'];
-        $result = self::$queryService->searchEvent(null, $prefectureCondition);
+        $result = self::$queryService->searchEvent($startedAt, null, null, $prefectureCondition);
         $data = $result->getData();
         self::assertEquals(count($prefectureCondition), $result->getTotal());
         self::assertEquals(count($prefectureCondition), count($data));
@@ -147,22 +147,21 @@ class EventQueryServiceTest extends TestCase
 
         // 全てのデータに合致しない検索条件
         $prefectureCondition = ['4'];
-        $result = self::$queryService->searchEvent(null, $prefectureCondition);
+        $result = self::$queryService->searchEvent($startedAt, null, null, $prefectureCondition);
         self::assertEquals(0, $result->getTotal());
         self::assertEmpty($result->getData());
 
         // 検索条件がnull
         $prefectureCondition = null;
-        $result = self::$queryService->searchEvent(null, $prefectureCondition);
+        $result = self::$queryService->searchEvent($startedAt, null, null, $prefectureCondition);
         self::assertEquals(3, $result->getTotal());
         self::assertEquals(3, count($result->getData()));
 
         // 検索条件がからの配列
         $prefectureCondition = [];
-        $result = self::$queryService->searchEvent(null, $prefectureCondition);
+        $result = self::$queryService->searchEvent($startedAt, null, null, $prefectureCondition);
         self::assertEquals(3, $result->getTotal());
         self::assertEquals(3, count($result->getData()));
-
     }
 
 }

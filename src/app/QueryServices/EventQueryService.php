@@ -5,66 +5,68 @@ namespace App\QueryServices;
 
 use Illuminate\Database\Query\Builder;
 use Illuminate\Support\Facades\DB;
+use DateTime;
 
 class EventQueryService implements EventQueryServiceInterface
 {
-    public function searchEvent(?string $freeText = null, ?array $prefectures = null, ?array $types = null, ?bool $isOnline = null,
+    public function searchEvent(?DateTime $from = null, ?DateTime $to = null, ?string $freeText = null,
+                                ?array $prefectures = null, ?array $types = null, ?bool $isOnline = null,
                                 int $page = 1, int $perPage = 15): PaginateResult
     {
-        $events = DB::table('events');
+        $queryBuilder = DB::table('events');
         //select
-        $events->select('events.id as id');
-        $events->addSelect('events.event_id as event_id');
-        $events->addSelect('events.site_name as site_name');
-        $events->addSelect('events.title as title');
-        $events->addSelect('events.catch as catch');
-        $events->addSelect('events.event_url as event_url');
-        $events->addSelect('events.address as address');
-        $events->addSelect('events.place as place');
-        $events->addSelect('events.lat as lat');
-        $events->addSelect('events.lon as lon');
-        $events->addSelect('events.started_at as started_at');
-        $events->addSelect('events.ended_at as ended_at');
-        $events->addSelect('events.limit as limit');
-        $events->addSelect('events.participants as participants');
-        $events->addSelect('events.waiting as waiting');
-        $events->addSelect('events.owner_nickname as owner_nickname');
-        $events->addSelect('events.owner_twitter_id as owner_twitter_id');
-        $events->addSelect('events.owner_display_name as owner_display_name');
-        $events->addSelect('events.event_created_at as created_at');
-        $events->addSelect('events.event_updated_at as updated_at');
-        $events->addSelect('events.is_online as is_online');
-        $events->addSelect('prefectures.name as prefecture_name');
-        $events->addSelect(DB::raw("group_concat(DISTINCT event_types.name) as types"));
-        $events->addSelect(DB::raw("group_concat(DISTINCT tags.name) as tags"));
+        $queryBuilder->select('events.id as id');
+        $queryBuilder->addSelect('events.event_id as event_id');
+        $queryBuilder->addSelect('events.site_name as site_name');
+        $queryBuilder->addSelect('events.title as title');
+        $queryBuilder->addSelect('events.catch as catch');
+        $queryBuilder->addSelect('events.event_url as event_url');
+        $queryBuilder->addSelect('events.address as address');
+        $queryBuilder->addSelect('events.place as place');
+        $queryBuilder->addSelect('events.lat as lat');
+        $queryBuilder->addSelect('events.lon as lon');
+        $queryBuilder->addSelect('events.started_at as started_at');
+        $queryBuilder->addSelect('events.ended_at as ended_at');
+        $queryBuilder->addSelect('events.limit as limit');
+        $queryBuilder->addSelect('events.participants as participants');
+        $queryBuilder->addSelect('events.waiting as waiting');
+        $queryBuilder->addSelect('events.owner_nickname as owner_nickname');
+        $queryBuilder->addSelect('events.owner_twitter_id as owner_twitter_id');
+        $queryBuilder->addSelect('events.owner_display_name as owner_display_name');
+        $queryBuilder->addSelect('events.event_created_at as created_at');
+        $queryBuilder->addSelect('events.event_updated_at as updated_at');
+        $queryBuilder->addSelect('events.is_online as is_online');
+        $queryBuilder->addSelect('prefectures.name as prefecture_name');
+        $queryBuilder->addSelect(DB::raw("group_concat(DISTINCT event_types.name) as types"));
+        $queryBuilder->addSelect(DB::raw("group_concat(DISTINCT tags.name) as tags"));
         //join
-        $events = $this->addJoinTables($events);
+        $queryBuilder = $this->addJoinTables($queryBuilder);
         //where
-        $events = $this->addWhereConditions($events, $freeText, $prefectures, $types, $isOnline);
+        $queryBuilder = $this->addWhereConditions($queryBuilder, $from, $to, $freeText, $prefectures, $types, $isOnline);
         //group by
-        $events->groupBy('events.id');
+        $queryBuilder->groupBy('events.id');
         //order by
-        $events->orderBy('events.started_at');
+        $queryBuilder->orderBy('events.started_at');
         //offset limit
-        $events->offset(($page - 1) * $perPage);
-        $events->limit($perPage);
+        $queryBuilder->offset(($page - 1) * $perPage);
+        $queryBuilder->limit($perPage);
 
-        $data = $events->get()->toArray();
-        $total = $this->getSearchEventTotalCount($freeText, $prefectures, $types, $isOnline);
-
+        $data = $queryBuilder->get()->toArray();
+        $total = $this->getSearchEventTotalCount($from, $to, $freeText, $prefectures, $types, $isOnline);
         return new PaginateResult($total, $perPage, $page, $data);
     }
 
-    private function getSearchEventTotalCount(?string $freeText = null, ?array $prefectures = null, ?array $types = null, ?bool $isOnline = null)
+    private function getSearchEventTotalCount(?DateTime $from = null, ?DateTime $to = null, ?string $freeText = null, ?array $prefectures = null,
+                                              ?array $types = null, ?bool $isOnline = null)
     {
-        $events = DB::table('events');
+        $queryBuilder = DB::table('events');
         //select
-        $events->Select('events.id');
+        $queryBuilder->Select('events.id');
         // join
-        $events = $this->addJoinTables($events);
+        $queryBuilder = $this->addJoinTables($queryBuilder);
         //where
-        $events = $this->addWhereConditions($events, $freeText, $prefectures, $types, $isOnline);
-        return $events->distinct()->count('events.id');
+        $queryBuilder = $this->addWhereConditions($queryBuilder, $from, $to, $freeText, $prefectures, $types, $isOnline);
+        return $queryBuilder->distinct()->count('events.id');
     }
 
     private function addJoinTables(Builder $builder): Builder
@@ -77,10 +79,18 @@ class EventQueryService implements EventQueryServiceInterface
         return $builder;
     }
 
-    private function addWhereConditions(Builder $builder, ?string $freeText, ?array $prefectures = null, ?array $types = null, ?bool $isOnline = null): Builder
+    private function addWhereConditions(Builder $builder, ?DateTime $from = null, ?DateTime $to = null, ?string $freeText = null,
+                                        ?array $prefectures = null, ?array $types = null, ?bool $isOnline = null): Builder
     {
+        if (!empty($from)) {
+            $builder->whereDate('started_at', '>=', $from);
+        }
+        if (!empty($to)) {
+            $builder->whereDate('started_at', '<=', $to);
+        }
         if (!empty($freeText)) {
-            $builder->whereRaw('MATCH (title, catch, description, place, address) AGAINST (? IN BOOLEAN MODE)', array($freeText));
+            $builder->whereRaw('MATCH (title, catch, description, place, address) AGAINST (? IN BOOLEAN MODE)',
+                array($freeText));
         }
         if (!empty($types)) {
             $builder->whereExists(function ($query) use ($types) {
@@ -108,8 +118,6 @@ class EventQueryService implements EventQueryServiceInterface
             }
         }
 
-        $now = (new \DateTime())->format('Y-m-d 0:0:0');
-        $builder->where('events.started_at', '>=', $now);
         return $builder;
     }
 

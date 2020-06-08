@@ -164,4 +164,58 @@ class EventQueryServiceTest extends TestCase
         self::assertEquals(3, count($result->getData()));
     }
 
+    public function testFromCondition()
+    {
+        $start = new DateTime('2020-01-01');
+        for ($i = 0; $i < 3; $i++) {
+            $event = new Event(null, '', $i, null, null, null, null,
+                null, null, null, null, null, $start);
+            self::$eventRepository->updateOrCreateEvent($event);
+            $start->modify('+1 day');
+        }
+
+        $from = new DateTime('2020-01-02');
+        $result = self::$queryService->searchEvent($from);
+        self::assertEquals(2, $result->getTotal());
+        foreach ($result->getData() as $data) {
+            self::assertTrue($from <= new DateTime($data->started_at));
+        }
+    }
+
+    public function testToCondition()
+    {
+        $start = new DateTime('2020-01-01');
+        for ($i = 0; $i < 3; $i++) {
+            $event = new Event(null, '', $i, null, null, null, null,
+                null, null, null, null, null, $start);
+            self::$eventRepository->updateOrCreateEvent($event);
+            $start->modify('+1 day');
+        }
+
+        $to = new DateTime('2020-01-02');
+        $result = self::$queryService->searchEvent(null, $to);
+        self::assertEquals(2, $result->getTotal());
+        foreach ($result->getData() as $data) {
+            self::assertTrue($to >= new DateTime($data->started_at));
+        }
+    }
+
+    public function testIsOnlineCondition()
+    {
+        $titles = ['オンライン', 'オフライン'];
+        foreach ($titles as $index => $title) {
+            $event = new Event(null, '', $index, $title);
+            $event->updateIsOnline();
+            self::$eventRepository->updateOrCreateEvent($event);
+        }
+        //オンラインの検索
+        $result = self::$queryService->searchEvent(null, null, null, null, null, true);
+        self::assertEquals(1, $result->getTotal());
+        self::assertEquals('オンライン', ($result->getData()[0]->title));
+        //オフラインの検索
+        $result = self::$queryService->searchEvent(null, null, null, null, null, false);
+        self::assertEquals(1, $result->getTotal());
+        self::assertEquals('オフライン', ($result->getData()[0]->title));
+    }
+
 }

@@ -22,6 +22,7 @@ class CreateEventEventType extends Migration
             $table->foreign('event_id')->references('id')->on('events')->onDelete('cascade');
             $table->foreign('event_type_id')->references('id')->on('event_types')->onDelete('cascade');
             $table->unique(['event_id', 'event_type_id']);
+            $table->engine = 'mroonga';
 
         });
     }

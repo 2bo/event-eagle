@@ -22,6 +22,7 @@ class CreateEventTagTable extends Migration
             $table->foreign('tag_id')->references('id')->on('tags')->onDelete('cascade');
             $table->foreign('event_id')->references('id')->on('events')->onDelete('cascade');
             $table->unique(['tag_id', 'event_id']);
+            $table->engine = 'mroonga';
         });
     }
 

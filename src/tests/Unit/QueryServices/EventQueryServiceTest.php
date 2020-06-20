@@ -4,6 +4,7 @@ namespace Tests\Unit\QueryServices;
 
 use App\Domain\Models\Event\ConnpassEvent;
 use App\Domain\Models\Event\Event;
+use App\Domain\Models\Event\EventType;
 use App\Domain\Models\Prefecture\PrefectureId;
 use App\QueryServices\EventQueryService;
 use App\Repositories\EventRepository;
@@ -11,13 +12,11 @@ use App\Repositories\EventTypeRepository;
 use App\Repositories\PrefectureRepository;
 use App\Repositories\TagRepository;
 use DateTime;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Artisan;
 use Tests\TestCase;
 
 class EventQueryServiceTest extends TestCase
 {
-    use RefreshDatabase;
     static private $queryService;
     static private $eventRepository;
     static private $typeRepository;
@@ -28,6 +27,7 @@ class EventQueryServiceTest extends TestCase
     public function setUp(): void
     {
         parent::setUp();
+        Artisan::call('migrate:refresh'); //RefreshDatabase traitが正常動作しないため追加
         Artisan::call('db:seed');
     }
 
@@ -200,6 +200,45 @@ class EventQueryServiceTest extends TestCase
         }
     }
 
+    public function testFreeTextCondition()
+    {
+        $eventId = 1;
+        //title
+        $event = new Event(null, '', $eventId++, 'PHPとLaravel');
+        self::$eventRepository->updateOrCreateEvent($event);
+        $result = self::$queryService->searchEvent(null, null, 'Laravel');
+        self::assertEquals(1, count($result->getData()));
+
+        //catch
+        $event = new Event(null, '', $eventId++, null, 'PHPとSymfony');
+        self::$eventRepository->updateOrCreateEvent($event);
+        $result = self::$queryService->searchEvent(null, null, 'Symfony');
+        self::assertEquals(1, count($result->getData()));
+
+        //description
+        $event = new Event(null, '', $eventId++, null, null, 'PHPとCakePHP');
+        self::$eventRepository->updateOrCreateEvent($event);
+        $result = self::$queryService->searchEvent(null, null, 'CakePHP');
+        self::assertEquals(1, count($result->getData()));
+
+        //address
+        $event = new Event(null, '', $eventId++, null, null, null, null, null, '東京都渋谷区');
+        self::$eventRepository->updateOrCreateEvent($event);
+        $result = self::$queryService->searchEvent(null, null, '渋谷区');
+        self::assertEquals(1, count($result->getData()));
+
+        //place
+        $event = new Event(null, '', $eventId++, null, null, null, null, null, null, '六本木ヒルズ10F');
+        self::$eventRepository->updateOrCreateEvent($event);
+        $result = self::$queryService->searchEvent(null, null, '六本木ヒルズ');
+        self::assertEquals(1, count($result->getData()));
+
+        //スペース区切りで複数条件の検索
+        $result = self::$queryService->searchEvent(null, null, 'Laravel Symfony CakePHP 渋谷区');
+        self::assertEquals(4, count($result->getData()));
+
+    }
+
     public function testIsOnlineCondition()
     {
         $titles = ['オンライン', 'オフライン'];
@@ -218,4 +257,120 @@ class EventQueryServiceTest extends TestCase
         self::assertEquals('オフライン', ($result->getData()[0]->title));
     }
 
+    public function testTypeCondition()
+    {
+        $types = [];
+        $types[] = new EventType(EventType::LT);
+        $types[] = new EventType(EventType::MOKUMOKU);
+        $event = new Event(null, '', 1, null, null, null, null,
+            null, null, null, null, null, null, null, null,
+            null, null, null, null, null, null,
+            null, null, null, false, $types);
+
+        //一致するタイプとしないものを両方含む条件
+        self::$eventRepository->updateOrCreateEvent($event);
+        $result = self::$queryService->searchEvent(null, null, null, null, [EventType::LT, EventType::READING]);
+        self::assertEquals(1, count($result->getData()));
+        //一致しない条件
+        $result = self::$queryService->searchEvent(null, null, null, null, [EventType::CONFERENCE, EventType::READING]);
+        self::assertEquals(0, count($result->getData()));
+    }
+
+    public function testPrefectureAndIsOnlineCondition()
+    {
+        // 北海道　オンライン
+        $prefectureId = new PrefectureId(1);
+        $event = new Event(null, '', 1, null, null, null, null,
+            $prefectureId, null, null, null, null, null, null, null,
+            null, null, null, null, null, null,
+            null, null, null, true);
+        self::$eventRepository->updateOrCreateEvent($event);
+
+        // 青森 オフライン
+        $prefectureId = new PrefectureId(2);
+        $event = new Event(null, '', 2, null, null, null, null,
+            $prefectureId, null, null, null, null, null, null, null,
+            null, null, null, null, null, null,
+            null, null, null, false);
+        self::$eventRepository->updateOrCreateEvent($event);
+
+        // 青森 オンラインを条件に検索 場所とオンラインはOR条件で検索する
+        $result = self::$queryService->searchEvent(null, null, null, [2], null, true);
+        self::assertEquals(2, count($result->getData()));
+    }
+
+    public function testAllCondition()
+    {
+        $eventId = 1;
+        $title = 'PHPとLaravel';
+        $prefectureId = new PrefectureId(1);
+        $startedAt = new DateTime('2020-06-20 18:00:00');
+        $endedAt = new DateTime('2020-06-20 20:00:00');
+        $types = [];
+        $types[] = new EventType(EventType::LT);
+        $types[] = new EventType(EventType::MOKUMOKU);
+        $isOnline = true;
+        $event = new Event(null, '', $eventId++, $title, null, null, null,
+            $prefectureId, null, null, null, null, $startedAt, $endedAt, null,
+            null, null, null, null, null, null,
+            null, null, null, $isOnline, $types);
+        self::$eventRepository->updateOrCreateEvent($event);
+
+        // titleだけ変えたイベント
+        $title = 'RubyとRails';
+        $event = new Event(null, '', $eventId, $title, null, null, null,
+            $prefectureId, null, null, null, null, $startedAt, $endedAt, null,
+            null, null, null, null, null, null,
+            null, null, null, $isOnline, $types);
+        self::$eventRepository->updateOrCreateEvent($event);
+
+        $result = self::$queryService->searchEvent($startedAt, $endedAt, $title, [$prefectureId->value()], [EventType::LT], $isOnline);
+        self::assertEquals(1, count($result->getData()));
+    }
+
+    public function testPager()
+    {
+        $numOfEvents = 10;
+        $perPage = 5;
+        for ($i = 0; $i < $numOfEvents; $i++) {
+            self::$eventRepository->updateOrCreateEvent(new Event(null, '', $i + 1, null,
+                null, null, null, null, null, null, null,
+                null, new DateTime('+ ' . $i . ' day')));
+        }
+
+        //1ページ目
+        $result = self::$queryService->searchEvent(null, null, null, null, null, null, 1, $perPage);
+        self::assertEquals($numOfEvents, $result->getTotal());
+        self::assertEquals(1, $result->getCurrentPage());
+        self::assertEquals(2, $result->getLastPage());
+        $eventIds = array_map(function ($data) {
+            return $data->event_id;
+        }, $result->getData());
+        self::assertEquals([1, 2, 3, 4, 5], $eventIds);
+
+        //2ページ目
+        $result = self::$queryService->searchEvent(null, null, null, null, null, null, 2, $perPage);
+        self::assertEquals($numOfEvents, $result->getTotal());
+        self::assertEquals(2, $result->getCurrentPage());
+        self::assertEquals(2, $result->getLastPage());
+        $eventIds = array_map(function ($data) {
+            return $data->event_id;
+        }, $result->getData());
+        self::assertEquals([6, 7, 8, 9, 10], $eventIds);
+    }
+
+    public function testOrder()
+    {
+        $numOfEvents = 3;
+        for ($i = 0; $i < $numOfEvents; $i++) {
+            self::$eventRepository->updateOrCreateEvent(new Event(null, '', $i + 1, null,
+                null, null, null, null, null, null, null,
+                null, new DateTime('- ' . $i . ' day')));
+        }
+        $result = self::$queryService->searchEvent();
+        $eventIds = array_map(function ($data) {
+            return $data->event_id;
+        }, $result->getData());
+        self::assertEquals([3, 2, 1], $eventIds);
+    }
 }

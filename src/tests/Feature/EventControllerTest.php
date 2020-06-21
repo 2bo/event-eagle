@@ -3,17 +3,30 @@
 namespace Tests\Feature;
 
 use App\QueryServices\PaginateResult;
+use App\Repositories\EventRepository;
 use App\UseCases\SearchEvents\SearchEventsInputData;
 use App\UseCases\SearchEvents\SearchEventsOutputData;
 use App\UseCases\SearchEvents\SearchEventsUseCase;
 use App\UseCases\SearchEvents\SearchEventsUseCaseInterface;
 use Tests\TestCase;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use App\Domain\Models\Event\Event;
 
 class EventControllerTest extends TestCase
 {
+    use RefreshDatabase;
 
     public function testSearch()
     {
+        $event = new Event(null, 'site_name', 1, 'title', 'catch',
+            'description', 'event_url', null, 'address', 'place',
+            1.0, 2.0, new \DateTime(), new \DateTime('+ 3 hour'), 10, 10, 1,
+            3, 'owner_nickname', 'owner_twitter_id',
+            'owner_display_name', 2, new \DateTime('- 7 days'),
+            new \DateTime('- 6 days'), true, [], []);
+        $repository = new EventRepository();
+        $repository->updateOrCreateEvent($event);
+
         $response = $this->get('api/events/search');
         $response->assertOk()
             ->assertJsonStructure(

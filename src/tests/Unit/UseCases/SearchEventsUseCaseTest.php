@@ -3,6 +3,7 @@
 namespace Tests\Unit\UseCases;
 
 use App\QueryServices\EventQueryService;
+use App\QueryServices\EventQueryServiceInterface;
 use App\QueryServices\PaginateResult;
 use App\UseCases\SearchEvents\SearchEventsInputData;
 use App\UseCases\SearchEvents\SearchEventsOutputData;
@@ -37,7 +38,7 @@ class SearchEventsUseCaseTest extends TestCase
             ->once()
             ->andReturn(new PaginateResult(10, 5, 1, []));
         //Mockに差し替える
-        $this->app->singleton(EventQueryService::class, function () use ($queryServiceMock) {
+        $this->app->singleton(EventQueryServiceInterface::class, function () use ($queryServiceMock) {
             return $queryServiceMock;
         });
         //コンテナを使ってインスタンスを取得
@@ -70,7 +71,7 @@ class SearchEventsUseCaseTest extends TestCase
             ->once()
             ->andReturn(new PaginateResult(10, 5, 1, []));
         //Mockに差し替える
-        $this->app->singleton(EventQueryService::class, function () use ($queryServiceMock) {
+        $this->app->singleton(EventQueryServiceInterface::class, function () use ($queryServiceMock) {
             return $queryServiceMock;
         });
         //コンテナを使ってインスタンスを取得

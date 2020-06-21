@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class DropWorkshopsTable extends Migration
+class AddFulltextToEvents extends Migration
 {
     /**
      * Run the migrations.
@@ -13,7 +13,8 @@ class DropWorkshopsTable extends Migration
      */
     public function up()
     {
-        Schema::dropIfExists('workshops');
+        DB::statement('ALTER TABLE events ADD FULLTEXT INDEX events_fulltext_index
+                         (`title`,`catch`,`description`,`address`,`place`) COMMENT \'parser "TokenMecab"\'');
     }
 
     /**
@@ -23,6 +24,6 @@ class DropWorkshopsTable extends Migration
      */
     public function down()
     {
-        //
+        DB::statement('ALTER TABLE events DROP INDEX events_fulltext_index');
     }
 }

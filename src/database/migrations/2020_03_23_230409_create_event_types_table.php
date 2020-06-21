@@ -18,6 +18,7 @@ class CreateEventTypesTable extends Migration
             $table->string('name', 255)->unique();
             $table->text('needle');
             $table->timestamps();
+            $table->engine = 'mroonga';
         });
     }
 

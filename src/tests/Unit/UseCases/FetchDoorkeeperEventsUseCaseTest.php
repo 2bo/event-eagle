@@ -37,7 +37,7 @@ class FetchDoorkeeperEventsUseCaseTest extends TestCase
         // Mockに差し替え
         $mockEvents = $this->getDoorkeeperApiRepositoryMockReturnData();
         $doorkeeperApiRepoMock = Mockery::mock(DoorkeeperEventApiRepository::class);
-        $doorkeeperApiRepoMock->shouldReceive('fetchEvents')->andReturn($mockEvents);
+        $doorkeeperApiRepoMock->shouldReceive('fetchEvents')->once()->andReturn($mockEvents);
         $this->app->singleton(DoorkeeperEventRepositoryInterface::class, function () use ($doorkeeperApiRepoMock) {
             return $doorkeeperApiRepoMock;
         });
@@ -87,4 +87,11 @@ class FetchDoorkeeperEventsUseCaseTest extends TestCase
         }
         return $events;
     }
+
+    protected function tearDown(): void
+    {
+        parent::tearDown();
+        Mockery::close();
+    }
+
 }

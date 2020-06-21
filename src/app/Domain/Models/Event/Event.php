@@ -32,6 +32,7 @@ class Event
     private $event_updated_at;
     private $is_online;
     private $types;
+    private $tags;
 
     public function __construct(
         ?int $id,
@@ -55,11 +56,12 @@ class Event
         ?string $owner_nickname = null,
         ?string $owner_twitter_id = null,
         ?string $owner_display_name = null,
-        ?string $group_id = null,
+        ?int $group_id = null,
         ?DateTime $event_created_at = null,
         ?DateTime $event_updated_at = null,
         bool $is_online = false,
-        array $types = []
+        array $types = [],
+        array $tags = []
     )
     {
         $this->id = $id;
@@ -88,6 +90,7 @@ class Event
         $this->event_updated_at = $event_updated_at;
         $this->is_online = $is_online;
         $this->setEventTypes($types);
+        $this->setTags($tags);
     }
 
 
@@ -105,6 +108,18 @@ class Event
         foreach ($eventTypes as $eventType) {
             if (is_a($eventType, EventType::class)) {
                 $this->types[] = $eventType;
+            }
+        }
+    }
+
+    public function setTags(array $tags = [])
+    {
+        if (!$tags) {
+            $this->tags = [];
+        }
+        foreach ($tags as $tag) {
+            if (is_a($tag, Tag::class)) {
+                $this->tags[] = $tag;
             }
         }
     }
@@ -341,6 +356,14 @@ class Event
     public function getTypes(): array
     {
         return $this->types;
+    }
+
+    /**
+     * @return array
+     */
+    public function getTags(): array
+    {
+        return $this->tags;
     }
 
 }

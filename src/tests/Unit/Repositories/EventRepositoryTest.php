@@ -2,6 +2,7 @@
 
 namespace Tests\Repositories\Unit;
 
+use App\Domain\Models\Event\Tag;
 use App\Domain\Models\Event\EventType;
 use App\Domain\Models\Prefecture\PrefectureId;
 use App\Domain\Models\Event\Event;
@@ -27,7 +28,7 @@ class EventRepositoryTest extends TestCase
     private static function initializeDb()
     {
         Artisan::call('migrate:refresh');
-        Artisan::call('db:seed --class=EventTypeSeeder');
+        Artisan::call('db:seed');
         self::$isDbInitialized = true;
     }
 
@@ -58,9 +59,15 @@ class EventRepositoryTest extends TestCase
         $eventCreatedAt = new DateTime('2020-01-01 15:00:00');
         $eventUpdatedAt = new DateTime('2020-01-01 20:00:00');
         $isOnline = true;
+        //FIXME repositoryからドメインクラスを取得する
         $types = [
             new EventType(1, 'name', 'needle'),
             new EventType(2, 'name', 'needle')
+        ];
+        //FIXME repositoryからドメインクラスを取得する
+        $tags = [
+            new Tag(1, 'name'),
+            new Tag(2, 'name')
         ];
 
         $event = new Event(
@@ -89,7 +96,8 @@ class EventRepositoryTest extends TestCase
             $eventCreatedAt,
             $eventUpdatedAt,
             $isOnline,
-            $types
+            $types,
+            $tags
         );
 
         $eventRepository = new EventRepository();
@@ -121,5 +129,6 @@ class EventRepositoryTest extends TestCase
         self::assertEquals($eventUpdatedAt->format('Y-m-d H:i:s'), $eventDataModel->event_updated_at);
         self::assertEquals($isOnline, $eventDataModel->is_online);
         self::assertEquals(count($types), count($eventDataModel->types()->get()));
+        self::assertEquals(count($tags), count($eventDataModel->tags()->get()));
     }
 }

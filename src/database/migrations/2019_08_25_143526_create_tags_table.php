@@ -18,6 +18,7 @@ class CreateTagsTable extends Migration
             $table->string('name')->unique()->collation('utf8mb4_general_ci');
             $table->string('icon_url')->nullable();
             $table->timestamps();
+            $table->engine = 'mroonga';
         });
     }
 

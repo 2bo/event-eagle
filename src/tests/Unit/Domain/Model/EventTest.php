@@ -2,6 +2,7 @@
 
 namespace Tests\Unit\Domain\Model;
 
+use App\Domain\Models\Event\Tag;
 use App\Domain\Models\Event\Event;
 use Tests\TestCase;
 
@@ -38,5 +39,17 @@ class EventTest extends TestCase
         $event = new Event(null, 'site_name', 1, 'zoom');
         $event->updateIsOnline();
         self::assertEquals(true, $event->isOnline());
+    }
+
+    public function testSetTags()
+    {
+        $event = new Event(null, '', '1');
+        // Tagクラスの配列以外はセットされない
+        $event->setTags([1, 2]);
+        self::assertEmpty($event->getTags());
+        // Tagクラスの配列はセットされる
+        $tags = [new Tag(1, 'PHP'), new Tag(2, 'Laravel')];
+        $event->setTags($tags);
+        self::assertEquals($tags, $event->getTags());
     }
 }

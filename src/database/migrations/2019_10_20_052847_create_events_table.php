@@ -38,6 +38,7 @@ class CreateEventsTable extends Migration
             $table->dateTimeTz('event_created_at')->nullable(); //イベント登録日時
             $table->dateTimeTz('event_updated_at')->nullable(); //イベント更新日時
             $table->timestamps();
+            $table->engine = 'mroonga';
         });
 
         Schema::table('events', function (Blueprint $table) {

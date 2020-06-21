@@ -66,12 +66,21 @@ class EventRepository implements EventRepositoryInterface
             ]
         );
 
+        //タイプの更新
         $typeIds = [];
         $types = $event->getTypes();
         foreach ($types as $type) {
             $typeIds[] = $type->getId();
         }
         $dataModel->types()->sync($typeIds);
+
+        //タグの更新
+        $tagIds = [];
+        $tags = $event->getTags();
+        foreach ($tags as $tag) {
+            $tagIds[] = $tag->getId();
+        }
+        $dataModel->tags()->sync($tagIds);
         return $event;
     }
 

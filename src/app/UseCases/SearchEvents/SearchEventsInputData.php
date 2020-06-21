@@ -16,7 +16,8 @@ class SearchEventsInputData
     private $types;
     private $page;
 
-    public function __construct(?DateTime $from, ?DateTime $to, ?string $keywords, ?array $prefectures, ?array $types, ?bool $isOnline, int $page)
+    public function __construct(?DateTime $from, ?DateTime $to, ?string $keywords, ?array $prefectures,
+                                ?array $types, ?bool $isOnline, int $page)
     {
         $this->from = $from;
         $this->to = $to;

@@ -21,7 +21,7 @@ class TagsSeeder extends Seeder
         );
 
         foreach ($sfo as $line) {
-            Tag::updateOrCreate(['name' => $line[0]]);
+            Tag::updateOrCreate(['name' => $line[0]], ['pattern' => $line[0]]);
         }
 
     }

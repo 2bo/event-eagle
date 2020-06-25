@@ -7,7 +7,7 @@ use App\DataModels\Event as EventDataModel;
 use App\Domain\Models\Event\Event;
 use App\Domain\Models\Event\EventType;
 use App\Domain\Models\Prefecture\PrefectureId;
-use Illuminate\Support\Facades\DB;
+use App\Domain\Models\Event\Tag;
 
 class EventRepository implements EventRepositoryInterface
 {
@@ -22,15 +22,11 @@ class EventRepository implements EventRepositoryInterface
         return $events;
     }
 
-    // FIXME Domain/Eventを返すように変更
-    public function getNewEvents(): array
+    public function findById(int $id)
     {
-        $events = DB::table('events')
-            ->orderBy('started_at', 'desc')
-            ->limit(30)
-            ->get()
-            ->toArray();
-        return $events;
+        $dataModel = EventDataModel::find($id);
+        $event = $this->convertDataModelToEntity($dataModel);
+        return $event;
     }
 
     public function updateOrCreateEvent(Event $event): Event
@@ -90,6 +86,10 @@ class EventRepository implements EventRepositoryInterface
         foreach ($eventDataModel->types as $type) {
             $types[] = new EventType($type->id, $type->name, $type->needle);
         }
+        $tags = [];
+        foreach ($eventDataModel->tags as $tag) {
+            $tags[] = new Tag($tag->id, $tag->name, $tag->pattern, $tag->icon_url);
+        }
 
         $event = new Event(
             $eventDataModel->id,
@@ -117,7 +117,8 @@ class EventRepository implements EventRepositoryInterface
             $eventDataModel->created_at ? new \DateTime($eventDataModel->event_created_at) : null,
             $eventDataModel->startd_at ? new \DateTime($eventDataModel->event_updated_at) : null,
             $eventDataModel->is_online ? true : false,
-            $types
+            $types,
+            $tags
         );
         return $event;
     }

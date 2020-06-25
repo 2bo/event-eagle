@@ -2,6 +2,7 @@
 
 namespace Tests\Repositories\Unit;
 
+use App\Domain\Models\Event\ConnpassEvent;
 use App\Domain\Models\Event\Tag;
 use App\Domain\Models\Event\EventType;
 use App\Domain\Models\Prefecture\PrefectureId;
@@ -130,5 +131,15 @@ class EventRepositoryTest extends TestCase
         self::assertEquals($isOnline, $eventDataModel->is_online);
         self::assertEquals(count($types), count($eventDataModel->types()->get()));
         self::assertEquals(count($tags), count($eventDataModel->tags()->get()));
+    }
+
+    public function testFindById()
+    {
+        $repository = new EventRepository();
+        $id = 1;
+        $repository->updateOrCreateEvent(new Event(null, ConnpassEvent::SITE_NAME_CONNPASS, $id));
+        $event = $repository->findById($id);
+        self::assertInstanceOf(Event::class, $event);
+        self::assertEquals($id, $event->getId());
     }
 }

@@ -4,11 +4,20 @@ namespace App\Http\Controllers;
 
 use App\UseCases\SearchEvents\SearchEventsInputData;
 use App\UseCases\SearchEvents\SearchEventsUseCaseInterface;
-use Illuminate\Http\Request;
+use App\UseCases\ShowEventDetail\ShowEventDetailInputData;
+use App\UseCases\ShowEventDetail\ShowEventDetailUseCaseInterface;
 use DateTime;
+use Illuminate\Http\Request;
 
 class EventController extends Controller
 {
+
+    public function show($id, ShowEventDetailUseCaseInterface $useCase)
+    {
+        $input = new ShowEventDetailInputData($id);
+        $output = $useCase->handle($input);
+        return response()->json($output->getEvent()->toArray());
+    }
 
     public function search(Request $request, SearchEventsUseCaseInterface $useCase)
     {

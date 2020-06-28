@@ -58,4 +58,14 @@ class Tag
         return $this->icon_url;
     }
 
+    public function toArray()
+    {
+        return [
+
+            'id' => $this->getId(),
+            'name' => $this->getName(),
+            'icon_url' => $this->getIconUrl(),
+        ];
+    }
+
 }

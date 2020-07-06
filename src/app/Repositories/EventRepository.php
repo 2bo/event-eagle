@@ -2,12 +2,12 @@
 
 namespace App\Repositories;
 
-use App\Domain\Models\Event\EventRepositoryInterface;
 use App\DataModels\Event as EventDataModel;
 use App\Domain\Models\Event\Event;
+use App\Domain\Models\Event\EventRepositoryInterface;
 use App\Domain\Models\Event\EventType;
-use App\Domain\Models\Prefecture\PrefectureId;
 use App\Domain\Models\Event\Tag;
+use App\Domain\Models\Prefecture\PrefectureId;
 
 class EventRepository implements EventRepositoryInterface
 {
@@ -104,7 +104,7 @@ class EventRepository implements EventRepositoryInterface
             $eventDataModel->place,
             $eventDataModel->lat,
             $eventDataModel->lon,
-            $eventDataModel->startd_at ? new \DateTime($eventDataModel->started_at) : null,
+            $eventDataModel->started_at ? new \DateTime($eventDataModel->started_at) : null,
             $eventDataModel->ended_at ? new \DateTime($eventDataModel->ended_at) : null,
             $eventDataModel->limit,
             $eventDataModel->participants,
@@ -114,8 +114,8 @@ class EventRepository implements EventRepositoryInterface
             $eventDataModel->owner_twitter_id,
             $eventDataModel->owner_display_name,
             $eventDataModel->group_id,
-            $eventDataModel->created_at ? new \DateTime($eventDataModel->event_created_at) : null,
-            $eventDataModel->startd_at ? new \DateTime($eventDataModel->event_updated_at) : null,
+            $eventDataModel->event_created_at ? new \DateTime($eventDataModel->event_created_at) : null,
+            $eventDataModel->event_updated_at ? new \DateTime($eventDataModel->event_updated_at) : null,
             $eventDataModel->is_online ? true : false,
             $types,
             $tags

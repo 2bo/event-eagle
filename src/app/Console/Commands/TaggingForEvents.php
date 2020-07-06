@@ -46,7 +46,7 @@ class TaggingForEvents extends Command
         foreach ($events as $event) {
             $tagIds = [];
             foreach ($tags as $tag) {
-                $pattern = $tag->pattern;
+                $pattern = '/' . $tag->pattern . '/';
                 $description = mb_substr(strip_tags($event->description), 0, $characterLimit);
                 if (preg_match($pattern, $event->title) || preg_match($pattern, $event->catch)
                     || preg_match($pattern, $description)) {

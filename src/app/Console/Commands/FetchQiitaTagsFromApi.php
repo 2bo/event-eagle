@@ -3,8 +3,8 @@
 namespace App\Console\Commands;
 
 use App\Services\QiitaService;
-use Illuminate\Console\Command;
 use Exception;
+use Illuminate\Console\Command;
 
 class FetchQiitaTagsFromApi extends Command
 {
@@ -40,7 +40,7 @@ class FetchQiitaTagsFromApi extends Command
     public function handle()
     {
         try {
-            QiitaService::fetchTagsFromApi(1, 3);
+            QiitaService::fetchTagsFromApi(1, 10);
         } catch (Exception $e) {
             $this->error($e->getMessage());
         }

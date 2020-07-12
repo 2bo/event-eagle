@@ -15,7 +15,7 @@ class Tag extends Model
 
     public function toDomainModel(): \App\Domain\Models\Event\Tag
     {
-        return new \App\Domain\Models\Event\Tag($this->id, $this->name, $this->pattern, $this->icon_url);
+        return new \App\Domain\Models\Event\Tag($this->id, $this->name, $this->pattern, $this->url_name, $this->icon_url);
     }
 
 }

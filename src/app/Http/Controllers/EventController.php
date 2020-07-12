@@ -16,6 +16,9 @@ class EventController extends Controller
     {
         $input = new ShowEventDetailInputData($id);
         $output = $useCase->handle($input);
+        if (is_null($output->getEvent())) {
+            return response()->json([], 404);
+        }
         return response()->json($output->getEvent()->toArray());
     }
 

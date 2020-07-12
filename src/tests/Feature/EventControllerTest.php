@@ -118,6 +118,13 @@ class EventControllerTest extends TestCase
         $response->assertOk();
     }
 
+    public function testShowWhenNotExist()
+    {
+        $response = $this->get('api/events/-1');
+        $response->assertNotFound();
+    }
+
+
     protected function tearDown(): void
     {
         parent::tearDown();

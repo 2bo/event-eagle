@@ -14,15 +14,15 @@ class ShowEventDetailOutputData
      * ShowEventDetailOutputData constructor.
      * @param $events
      */
-    public function __construct(Event $event)
+    public function __construct(?Event $event)
     {
         $this->event = $event;
     }
 
     /**
-     * @return Event
+     * @return ?Event
      */
-    public function getEvent(): Event
+    public function getEvent(): ?Event
     {
         return $this->event;
     }

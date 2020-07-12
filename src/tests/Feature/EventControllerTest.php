@@ -2,15 +2,15 @@
 
 namespace Tests\Feature;
 
+use App\Domain\Models\Event\Event;
 use App\QueryServices\PaginateResult;
 use App\Repositories\EventRepository;
 use App\UseCases\SearchEvents\SearchEventsInputData;
 use App\UseCases\SearchEvents\SearchEventsOutputData;
 use App\UseCases\SearchEvents\SearchEventsUseCase;
 use App\UseCases\SearchEvents\SearchEventsUseCaseInterface;
-use Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use App\Domain\Models\Event\Event;
+use Tests\TestCase;
 
 class EventControllerTest extends TestCase
 {
@@ -109,6 +109,12 @@ class EventControllerTest extends TestCase
                 "page" => $page
             ]);
 
+        $response->assertOk();
+    }
+
+    public function testShow()
+    {
+        $response = $this->get('api/events/1');
         $response->assertOk();
     }
 

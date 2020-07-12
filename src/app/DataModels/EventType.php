@@ -10,4 +10,9 @@ class EventType extends Model
     {
         return $this->belongsToMany(Event::class)->withTimestamps();
     }
+
+    public function toDomainModel(): \App\Domain\Models\Event\EventType
+    {
+        return new \App\Domain\Models\Event\EventType($this->id, $this->name, $this->needle);
+    }
 }

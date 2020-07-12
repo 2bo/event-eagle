@@ -12,4 +12,10 @@ class Tag extends Model
     {
         return $this->belongsToMany(Event::class)->withTimestamps();
     }
+
+    public function toDomainModel(): \App\Domain\Models\Event\Tag
+    {
+        return new \App\Domain\Models\Event\Tag($this->id, $this->name, $this->pattern, $this->icon_url);
+    }
+
 }

@@ -5,8 +5,6 @@ namespace App\Repositories;
 use App\DataModels\Event as EventDataModel;
 use App\Domain\Models\Event\Event;
 use App\Domain\Models\Event\EventRepositoryInterface;
-use App\Domain\Models\Event\EventType;
-use App\Domain\Models\Event\Tag;
 use App\Domain\Models\Prefecture\PrefectureId;
 
 class EventRepository implements EventRepositoryInterface
@@ -87,11 +85,11 @@ class EventRepository implements EventRepositoryInterface
     {
         $types = [];
         foreach ($eventDataModel->types as $type) {
-            $types[] = new EventType($type->id, $type->name, $type->needle);
+            $types[] = $type->toDomainModel();
         }
         $tags = [];
         foreach ($eventDataModel->tags as $tag) {
-            $tags[] = new Tag($tag->id, $tag->name, $tag->pattern, $tag->icon_url);
+            $tags[] = $tag->toDomainModel();
         }
 
         $event = new Event(

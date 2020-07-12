@@ -22,9 +22,12 @@ class EventRepository implements EventRepositoryInterface
         return $events;
     }
 
-    public function findById(int $id)
+    public function findById(int $id): ?Event
     {
         $dataModel = EventDataModel::find($id);
+        if (is_null($dataModel)) {
+            return null;
+        }
         $event = $this->convertDataModelToEntity($dataModel);
         return $event;
     }

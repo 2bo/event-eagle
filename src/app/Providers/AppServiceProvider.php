@@ -18,12 +18,14 @@ use App\UseCases\FetchConnpassEvents\FetchConnpassEventsUseCase;
 use App\UseCases\FetchConnpassEvents\FetchConnpassEventsUseCaseInterface;
 use App\UseCases\FetchDoorkeeperEvents\FetchDoorkeeperEventsUseCase;
 use App\UseCases\FetchDoorkeeperEvents\FetchDoorkeeperEventsUseCaseInterface;
-use App\UseCases\GetEventTypeConditions\GetEventTypeConditionsUseCaseInterface;
 use App\UseCases\GetEventTypeConditions\GetEventTypeConditionsUseCase;
+use App\UseCases\GetEventTypeConditions\GetEventTypeConditionsUseCaseInterface;
 use App\UseCases\GetPlaceConditions\GetPlaceConditionsUseCase;
 use App\UseCases\GetPlaceConditions\GetPlaceConditionsUseCaseInterface;
 use App\UseCases\SearchEvents\SearchEventsUseCase;
 use App\UseCases\SearchEvents\SearchEventsUseCaseInterface;
+use App\UseCases\ShowEventDetail\ShowEventDetailUseCase;
+use App\UseCases\ShowEventDetail\ShowEventDetailUseCaseInterface;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -48,6 +50,7 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(GetPlaceConditionsUseCaseInterface::class, GetPlaceConditionsUseCase::class);
         $this->app->bind(GetEventTypeConditionsUseCaseInterface::class, GetEventTypeConditionsUseCase::class);
         $this->app->bind(SearchEventsUseCaseInterface::class, SearchEventsUseCase::class);
+        $this->app->bind(ShowEventDetailUseCaseInterface::class, ShowEventDetailUseCase::class);
     }
 
     /**

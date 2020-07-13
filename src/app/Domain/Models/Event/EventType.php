@@ -51,4 +51,12 @@ class EventType
         return $this->needle;
     }
 
+    public function toArray()
+    {
+        return [
+            'id' => $this->getId(),
+            'name' => $this->getName(),
+        ];
+    }
+
 }

@@ -2,12 +2,10 @@
 
 namespace App\Repositories;
 
-use App\Domain\Models\Event\EventRepositoryInterface;
 use App\DataModels\Event as EventDataModel;
 use App\Domain\Models\Event\Event;
-use App\Domain\Models\Event\EventType;
+use App\Domain\Models\Event\EventRepositoryInterface;
 use App\Domain\Models\Prefecture\PrefectureId;
-use Illuminate\Support\Facades\DB;
 
 class EventRepository implements EventRepositoryInterface
 {
@@ -22,15 +20,14 @@ class EventRepository implements EventRepositoryInterface
         return $events;
     }
 
-    // FIXME Domain/Eventを返すように変更
-    public function getNewEvents(): array
+    public function findById(int $id): ?Event
     {
-        $events = DB::table('events')
-            ->orderBy('started_at', 'desc')
-            ->limit(30)
-            ->get()
-            ->toArray();
-        return $events;
+        $dataModel = EventDataModel::find($id);
+        if (is_null($dataModel)) {
+            return null;
+        }
+        $event = $this->convertDataModelToEntity($dataModel);
+        return $event;
     }
 
     public function updateOrCreateEvent(Event $event): Event
@@ -88,7 +85,11 @@ class EventRepository implements EventRepositoryInterface
     {
         $types = [];
         foreach ($eventDataModel->types as $type) {
-            $types[] = new EventType($type->id, $type->name, $type->needle);
+            $types[] = $type->toDomainModel();
+        }
+        $tags = [];
+        foreach ($eventDataModel->tags as $tag) {
+            $tags[] = $tag->toDomainModel();
         }
 
         $event = new Event(
@@ -104,7 +105,7 @@ class EventRepository implements EventRepositoryInterface
             $eventDataModel->place,
             $eventDataModel->lat,
             $eventDataModel->lon,
-            $eventDataModel->startd_at ? new \DateTime($eventDataModel->started_at) : null,
+            $eventDataModel->started_at ? new \DateTime($eventDataModel->started_at) : null,
             $eventDataModel->ended_at ? new \DateTime($eventDataModel->ended_at) : null,
             $eventDataModel->limit,
             $eventDataModel->participants,
@@ -114,10 +115,11 @@ class EventRepository implements EventRepositoryInterface
             $eventDataModel->owner_twitter_id,
             $eventDataModel->owner_display_name,
             $eventDataModel->group_id,
-            $eventDataModel->created_at ? new \DateTime($eventDataModel->event_created_at) : null,
-            $eventDataModel->startd_at ? new \DateTime($eventDataModel->event_updated_at) : null,
+            $eventDataModel->event_created_at ? new \DateTime($eventDataModel->event_created_at) : null,
+            $eventDataModel->event_updated_at ? new \DateTime($eventDataModel->event_updated_at) : null,
             $eventDataModel->is_online ? true : false,
-            $types
+            $types,
+            $tags
         );
         return $event;
     }

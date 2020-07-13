@@ -21,11 +21,7 @@ class TagRepository
         if (!$dataModel) {
             return null;
         }
-        return $this->toDomainModel($dataModel);
+        return $dataModel->toDomainModel();
     }
 
-    private function toDomainModel(TagDataModel $dataModel): Tag
-    {
-        return new Tag($dataModel->id, $dataModel->name, $dataModel->pattern, $dataModel->icon_url);
-    }
 }

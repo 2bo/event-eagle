@@ -366,4 +366,39 @@ class Event
         return $this->tags;
     }
 
+    public function toArray()
+    {
+        return [
+            'id' => $this->getId(),
+            'site_name' => $this->getSiteName(),
+            'title' => $this->getTitle(),
+            'catch' => $this->getCatch(),
+            'description' => $this->getDescription(),
+            'event_url' => $this->getEventUrl(),
+            'prefecture_id' => $this->getPrefectureId(),
+            'address' => $this->getAddress(),
+            'place' => $this->getPlace(),
+            'lat' => $this->getLat(),
+            'lon' => $this->getLon(),
+            'started_at' => $this->getStartedAt(),
+            'ended_at' => $this->getEndedAt(),
+            'limit' => $this->getLimit(),
+            'participants' => $this->getParticipants(),
+            'waiting' => $this->getWaiting(),
+            'owner_id' => $this->getOwnerId(),
+            'owner_nickname' => $this->getOwnerNickname(),
+            'owner_twitter_id' => $this->getOwnerTwitterId(),
+            'owner_display_name' => $this->getOwnerDisplayName(),
+            'group_id' => $this->getGroupId(),
+            'event_created_at' => $this->getEventCreatedAt(),
+            'event_updated_at' => $this->getEventUpdatedAt(),
+            'is_online' => $this->isOnline(),
+            'types' => array_map(function ($type) {
+                return $type->toArray();
+            }, $this->getTypes()),
+            'tags' => array_map(function ($tag) {
+                return $tag->toArray();
+            }, $this->getTags()),
+        ];
+    }
 }

@@ -5,8 +5,8 @@ namespace App\Repositories;
 
 
 use App\DataModels\EventType as EventTypeDataModel;
-use App\Domain\Models\Event\EventTypeRepositoryInterface;
 use App\Domain\Models\Event\EventType;
+use App\Domain\Models\Event\EventTypeRepositoryInterface;
 
 class EventTypeRepository implements EventTypeRepositoryInterface
 {
@@ -16,8 +16,17 @@ class EventTypeRepository implements EventTypeRepositoryInterface
         $dataModels = EventTypeDataModel::all();
 
         foreach ($dataModels as $dataModel) {
-            $eventTypes[] = new EventType($dataModel->id, $dataModel->name, $dataModel->needle);
+            $eventTypes[] = $dataModel->toDomainModel();
         }
         return $eventTypes;
+    }
+
+    public function findById(int $id): ?EventType
+    {
+        $eventType = EventTypeDataModel::find($id);
+        if (is_null($eventType)) {
+            return null;
+        }
+        return $eventType->toDomainModel();
     }
 }

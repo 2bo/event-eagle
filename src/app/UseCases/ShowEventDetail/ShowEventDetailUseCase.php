@@ -6,6 +6,7 @@ namespace App\UseCases\ShowEventDetail;
 
 use App\Repositories\EventRepository;
 
+// TODO: add test code
 class ShowEventDetailUseCase implements ShowEventDetailUseCaseInterface
 {
 

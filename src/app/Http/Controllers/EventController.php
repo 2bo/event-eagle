@@ -19,6 +19,7 @@ class EventController extends Controller
         if (is_null($output->getEvent())) {
             return response()->json([], 404);
         }
+        // TODO: add test code for json structure
         return response()->json($output->getEvent()->toArray());
     }
 

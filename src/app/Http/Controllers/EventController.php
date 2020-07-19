@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\UseCases\GetEventsFromTag\GetEventsFromTagInputData;
+use App\UseCases\GetEventsFromTag\GetEventsFromTagUseCaseInterface;
 use App\UseCases\SearchEvents\SearchEventsInputData;
 use App\UseCases\SearchEvents\SearchEventsUseCaseInterface;
 use App\UseCases\ShowEventDetail\ShowEventDetailInputData;
@@ -44,6 +46,13 @@ class EventController extends Controller
         }
 
         $input = new SearchEventsInputData($fromDate, $toDate, $keywords, $places, $types, $isOnline, $page);
+        $output = $useCase->handle($input);
+        return response()->json($output->getPaginateResult()->toArray());
+    }
+
+    public function tag($tagUrlName, GetEventsFromTagUseCaseInterface $useCase)
+    {
+        $input = new GetEventsFromTagInputData($tagUrlName);
         $output = $useCase->handle($input);
         return response()->json($output->getPaginateResult()->toArray());
     }

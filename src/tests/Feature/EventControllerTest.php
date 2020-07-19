@@ -2,9 +2,11 @@
 
 namespace Tests\Feature;
 
+use App\Domain\Models\Event\ConnpassEvent;
 use App\Domain\Models\Event\Event;
 use App\QueryServices\PaginateResult;
 use App\Repositories\EventRepository;
+use App\Repositories\TagRepository;
 use App\UseCases\SearchEvents\SearchEventsInputData;
 use App\UseCases\SearchEvents\SearchEventsOutputData;
 use App\UseCases\SearchEvents\SearchEventsUseCase;
@@ -15,6 +17,12 @@ use Tests\TestCase;
 class EventControllerTest extends TestCase
 {
     use RefreshDatabase;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+        $this->seed();
+    }
 
     public function testSearch()
     {
@@ -122,6 +130,21 @@ class EventControllerTest extends TestCase
     {
         $response = $this->get('api/events/-1');
         $response->assertNotFound();
+    }
+
+    public function testTag()
+    {
+        $tagRepository = new TagRepository();
+        $phpTag = $tagRepository->findByName('PHP');
+        $event = new Event(null, ConnpassEvent::SITE_NAME_CONNPASS, 2, 'title', null,
+            null, null, null, null, null, null, null,
+            new \DateTime(), null, null, null, null, null,
+            null, null, null, null, null,
+            null, true, [], [$phpTag]);
+        $eventRepository = new EventRepository();
+        $eventRepository->updateOrCreateEvent($event);
+        $response = $this->get('api/events/tag/php');
+        $response->assertOk();
     }
 
 

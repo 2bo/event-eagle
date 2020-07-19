@@ -3,9 +3,9 @@
 
 namespace App\QueryServices;
 
+use DateTime;
 use Illuminate\Database\Query\Builder;
 use Illuminate\Support\Facades\DB;
-use DateTime;
 
 class EventQueryService implements EventQueryServiceInterface
 {
@@ -57,7 +57,7 @@ class EventQueryService implements EventQueryServiceInterface
     }
 
     private function getSearchEventTotalCount(?DateTime $from = null, ?DateTime $to = null, ?string $freeText = null, ?array $prefectures = null,
-                                              ?array $types = null, ?bool $isOnline = null)
+                                              ?array $types = null, ?bool $isOnline = null): int
     {
         $queryBuilder = DB::table('events');
         //select

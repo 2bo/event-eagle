@@ -74,7 +74,7 @@ class GetEventsFromTagQueryService implements GetEventsFromTagQueryServiceInterf
                 }
             }
             return $item;
-        });
+        })->toArray();
         $total = $this->getSearchEventTotalCount($tagUrlName, $from, $to);
         return new PaginateResult($total, $perPage, $page, $data);
     }

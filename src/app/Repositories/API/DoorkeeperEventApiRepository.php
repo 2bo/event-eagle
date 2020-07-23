@@ -77,15 +77,15 @@ class DoorkeeperEventApiRepository implements DoorkeeperEventRepositoryInterface
             null,
             $eventJson['id'],
             $eventJson['title'],
-            $eventJson['starts_at'] ? new \DateTime($eventJson['starts_at']) : null,
-            $eventJson['ends_at'] ? new \DateTime($eventJson['ends_at']) : null,
+            $this->utcToJst($eventJson['starts_at']),
+            $this->utcToJst($eventJson['ends_at']),
             $eventJson['venue_name'],
             $eventJson['address'],
             $eventJson['lat'],
             $eventJson['long'],
             $eventJson['ticket_limit'],
-            $eventJson['published_at'] ? new \DateTime($eventJson['published_at']) : null,
-            $eventJson['updated_at'] ? new \DateTime($eventJson['updated_at']) : null,
+            $this->utcToJst($eventJson['published_at']),
+            $this->utcToJst($eventJson['updated_at']),
             $eventJson['group'],
             $eventJson['description'],
             $eventJson['public_url'],
@@ -94,6 +94,20 @@ class DoorkeeperEventApiRepository implements DoorkeeperEventRepositoryInterface
             null,
             $eventTypes
         );
+    }
+
+    private function utcToJst(?string $utc): ?\DateTime
+    {
+        if (!$utc) {
+            return null;
+        }
+        // YYYY-MM-DDThh:mm:ss.000Z
+        if (!preg_match('/^[\d]{4}\-[\d]{2}\-[\d]{2}T[\d]{2}:[\d]{2}:[\d]{2}\.[\d]{3}Z$/', $utc)) {
+            throw new \InvalidArgumentException('Not UTC DateTime format');
+        };
+        $utcDateTime = new \DateTime($utc);
+        $jstDateTime = $utcDateTime->setTimezone(new \DateTimeZone('Asia/Tokyo'));
+        return $jstDateTime;
     }
 
 

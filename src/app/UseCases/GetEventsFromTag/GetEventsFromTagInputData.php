@@ -7,6 +7,7 @@ namespace App\UseCases\GetEventsFromTag;
 class GetEventsFromTagInputData
 {
     private $tagUrlName;
+    private $page;
     private $from;
     private $to;
 
@@ -14,9 +15,10 @@ class GetEventsFromTagInputData
      * GetEventsFromTagInputData constructor.
      * @param $tagUrlName
      */
-    public function __construct(string $tagUrlName, ?\DateTime $from = null, ?\DateTime $to = null)
+    public function __construct(string $tagUrlName, int $page, ?\DateTime $from = null, ?\DateTime $to = null)
     {
         $this->tagUrlName = $tagUrlName;
+        $this->page = $page;
         $this->from = $from;
         $this->to = $to;
     }
@@ -27,6 +29,14 @@ class GetEventsFromTagInputData
     public function getTagUrlName(): string
     {
         return $this->tagUrlName;
+    }
+
+    /**
+     * @return int
+     */
+    public function getPage(): int
+    {
+        return $this->page;
     }
 
     /**

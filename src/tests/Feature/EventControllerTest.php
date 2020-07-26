@@ -143,7 +143,7 @@ class EventControllerTest extends TestCase
             null, true, [], [$phpTag]);
         $eventRepository = new EventRepository();
         $eventRepository->updateOrCreateEvent($event);
-        $response = $this->get('api/events/tag/php');
+        $response = $this->get('api/events/tag/php?page=1');
         $response->assertOk();
     }
 

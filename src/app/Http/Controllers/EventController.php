@@ -50,9 +50,10 @@ class EventController extends Controller
         return response()->json($output->getPaginateResult()->toArray());
     }
 
-    public function tag($tagUrlName, GetEventsFromTagUseCaseInterface $useCase)
+    public function tag(Request $request, $tagUrlName, GetEventsFromTagUseCaseInterface $useCase)
     {
-        $input = new GetEventsFromTagInputData($tagUrlName);
+        $page = $request->query('page', 1);
+        $input = new GetEventsFromTagInputData($tagUrlName, $page);
         $output = $useCase->handle($input);
         return response()->json($output->getPaginateResult()->toArray());
     }

@@ -37,8 +37,8 @@ class EventQueryService implements EventQueryServiceInterface
         $queryBuilder->addSelect('events.event_updated_at as updated_at');
         $queryBuilder->addSelect('events.is_online as is_online');
         $queryBuilder->addSelect('prefectures.name as prefecture_name');
-        $queryBuilder->addSelect(DB::raw("group_concat(DISTINCT event_types.name) as types"));
-        $queryBuilder->addSelect(DB::raw("group_concat(DISTINCT tags.name) as tags"));
+        $queryBuilder->addSelect(DB::raw("group_concat(DISTINCT CONCAT(event_types.id, ':', event_types.name)) as types"));
+        $queryBuilder->addSelect(DB::raw("group_concat(DISTINCT CONCAT(tags.id, ':', tags.name, ':', tags.url_name)) as tags"));
         //join
         $queryBuilder = $this->addJoinTables($queryBuilder);
         //where
@@ -50,8 +50,32 @@ class EventQueryService implements EventQueryServiceInterface
         //offset limit
         $queryBuilder->offset(($page - 1) * $perPage);
         $queryBuilder->limit($perPage);
-
-        $data = $queryBuilder->get()->toArray();
+        //データ整形
+        $data = $queryBuilder->get()->map(function ($item) {
+            //タイプの整形
+            if ($item->types) {
+                //id:name, id:name, ...を1つのタイプ分に分割
+                $types = explode(',', $item->types);
+                $item->types = [];
+                foreach ($types as $type) {
+                    //id:nameの項目ごとに分割
+                    $typeArray = explode(':', $type);
+                    $item->types[] = ['id' => $typeArray[0], 'name' => $typeArray[1]];
+                }
+            }
+            //タグの整形
+            if ($item->tags) {
+                //id:name:url_name, id:name:url_name, ...1つのタグ分に分割
+                $tags = explode(',', $item->tags);
+                $item->tags = [];
+                foreach ($tags as $tag) {
+                    //id:name:url_nameの項目ごとに分割
+                    $tagArray = explode(':', $tag);
+                    $item->tags[] = ['id' => $tagArray[0], 'name' => $tagArray[1], 'url_name' => $tagArray[2]];
+                }
+            }
+            return $item;
+        })->toArray();
         $total = $this->getSearchEventTotalCount($from, $to, $freeText, $prefectures, $types, $isOnline);
         return new PaginateResult($total, $perPage, $page, $data);
     }

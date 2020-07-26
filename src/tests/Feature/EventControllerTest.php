@@ -4,8 +4,10 @@ namespace Tests\Feature;
 
 use App\Domain\Models\Event\ConnpassEvent;
 use App\Domain\Models\Event\Event;
+use App\Domain\Models\Event\EventType;
 use App\QueryServices\PaginateResult;
 use App\Repositories\EventRepository;
+use App\Repositories\EventTypeRepository;
 use App\Repositories\TagRepository;
 use App\UseCases\SearchEvents\SearchEventsInputData;
 use App\UseCases\SearchEvents\SearchEventsOutputData;
@@ -26,12 +28,23 @@ class EventControllerTest extends TestCase
 
     public function testSearch()
     {
+        //タイプ
+        $typeRepository = new EventTypeRepository();
+        $typeMokumoku = $typeRepository->findById(EventType::MOKUMOKU);
+        $typeConference = $typeRepository->findById(EventType::CONFERENCE);
+        $types = [$typeMokumoku, $typeConference];
+        //タグ
+        $tagRepository = new TagRepository();
+        $tagPhp = $tagRepository->findByName('php');
+        $tagLaravel = $tagRepository->findByName('Laravel');
+        $tags = [$tagPhp, $tagLaravel];
+
         $event = new Event(null, 'site_name', 1, 'title', 'catch',
             'description', 'event_url', null, 'address', 'place',
             1.0, 2.0, new \DateTime(), new \DateTime('+ 3 hour'), 10, 10, 1,
             3, 'owner_nickname', 'owner_twitter_id',
             'owner_display_name', 2, new \DateTime('- 7 days'),
-            new \DateTime('- 6 days'), true, [], []);
+            new \DateTime('- 6 days'), true, $types, $tags);
         $repository = new EventRepository();
         $repository->updateOrCreateEvent($event);
 
@@ -67,8 +80,19 @@ class EventControllerTest extends TestCase
                             'updated_at',
                             'is_online',
                             'prefecture_name',
-                            'types',
-                            'tags',
+                            'types' => [
+                                '*' => [
+                                    'id',
+                                    'name'
+                                ]
+                            ],
+                            'tags' => [
+                                '*' => [
+                                    'id',
+                                    'name',
+                                    'url_name'
+                                ]
+                            ],
                         ]
                     ]
                 ]

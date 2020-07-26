@@ -86,7 +86,7 @@ class GetEventsFromTagQueryServiceTest extends TestCase
         //検索条件
         $from = new \DateTime();
         $to = new \DateTime('+ 1 month');
-        $paginateResult = self::$queryService->getEventsFromTag('php', $from, $to);
+        $paginateResult = self::$queryService->getEventsFromTag('php', $from, $to, 1);
         $data = $paginateResult->getData();
 
         //テスト

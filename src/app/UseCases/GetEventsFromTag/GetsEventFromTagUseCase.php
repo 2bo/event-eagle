@@ -21,10 +21,9 @@ class GetsEventFromTagUseCase implements GetEventsFromTagUseCaseInterface
 
     public function handle(GetEventsFromTagInputData $input): GetEventsFromTagOutputData
     {
-        $tagUrlName = $input->getTagUrlName();
         $from = $input->getFrom() ?: new \DateTime('first day of this month');
         $to = $input->getTo() ?: (clone $from)->modify('+3 month');
-        $paginateResult = $this->queryService->getEventsFromTag($tagUrlName, $from, $to);
+        $paginateResult = $this->queryService->getEventsFromTag($input->getTagUrlName(), $from, $to, $input->getPage());
         return new GetEventsFromTagOutputData($paginateResult);
     }
 }

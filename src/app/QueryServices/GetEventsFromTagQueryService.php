@@ -14,6 +14,7 @@ class GetEventsFromTagQueryService implements GetEventsFromTagQueryServiceInterf
                                      int $page = 1, int $perPage = 15): PaginateResult
     {
         $queryBuilder = DB::table('events');
+        $queryBuilder->select('events.id as id');
         $queryBuilder->addSelect('events.event_id as event_id');
         $queryBuilder->addSelect('events.site_name as site_name');
         $queryBuilder->addSelect('events.title as title');

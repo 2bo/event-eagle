@@ -45,8 +45,15 @@ class EventQueryServiceTest extends TestCase
     public function testSelect()
     {
         //テストデータの作成
-        $types = self::$typeRepository->all();
-        $tags = [self::$tagRepository->findByName('PHP'), self::$tagRepository->findByName('Laravel')];
+        //タイプ
+        $typeMokumoku = self::$typeRepository->findById(EventType::MOKUMOKU);
+        $typeConference = self::$typeRepository->findById(EventType::CONFERENCE);
+        $types = [$typeMokumoku, $typeConference];
+        //タグ
+        $tagPhp = self::$tagRepository->findByName('php');
+        $tagLaravel = self::$tagRepository->findByName('Laravel');
+        $tags = [$tagPhp, $tagLaravel];
+
         $startedAt = new DateTime();
         $endedAt = new DateTime();
         $eventCreatedAt = new DateTime();
@@ -103,21 +110,18 @@ class EventQueryServiceTest extends TestCase
         $prefecture = self::$prefRepository->findById($prefectureId);
         self::assertEquals($prefecture->getName(), $data->prefecture_name);
 
-        //正解となるタイプの名前
-        $typeNames = array_map(function ($type) {
-            return $type->getName();
-        }, $types);
-        //イベントタイプの検索結果データはカンマ区切りで連結されている
-        self::assertEmpty(array_diff($typeNames, explode(',', $data->types)));
-        self::assertEquals(count($typeNames), count(explode(',', $data->types)));
-
-        //正解となるタグの名前
-        $tagNames = array_map(function ($tag) {
-            return $tag->getName();
-        }, $tags);
-        //タグの検索結果データはカンマ区切りで連結されている
-        self::assertEmpty(array_diff($tagNames, explode(',', $data->tags)));
-        self::assertEquals(count($tagNames), count(explode(',', $data->tags)));
+        //正解となるタイプ
+        $expectedType = [
+            ['id' => $typeMokumoku->getId(), 'name' => $typeMokumoku->getName()],
+            ['id' => $typeConference->getId(), 'name' => $typeConference->getName()],
+        ];
+        self::assertEquals($expectedType, $data->types);
+        //正解となるタグ
+        $expectedTag = [
+            ['id' => $tagLaravel->getId(), 'name' => $tagLaravel->getName(), 'url_name' => $tagLaravel->getUrlName()],
+            ['id' => $tagPhp->getId(), 'name' => $tagPhp->getName(), 'url_name' => $tagPhp->getUrlName()],
+        ];
+        self::assertEquals($expectedTag, $data->tags);
     }
 
     public function testPrefectureCondition()

@@ -12,12 +12,6 @@
 */
 
 
-Route::resource('tags', 'TagController');
+//Auth::routes();
 
-Auth::routes();
 
-Route::get('/home', 'HomeController@index')->name('home');
-
-Route::get('/sample', function () {
-    return view('sample');
-});

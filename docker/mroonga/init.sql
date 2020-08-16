@@ -1,3 +1,4 @@
-CREATE DATABASE ivent_gate;
-CREATE USER ivent_gate IDENTIFIED BY 'ivent_gate';
-GRANT ALL PRIVILEGES ON ivent_gate.* TO 'ivent_gate';
+-- コンテナを初回起動したあとに手動実行する
+CREATE DATABASE event_eagle;
+CREATE USER event_eagle IDENTIFIED BY 'event_eagle';
+GRANT ALL PRIVILEGES ON event_eagle.* TO 'event_eagle';

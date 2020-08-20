@@ -380,8 +380,8 @@ class Event
             'place' => $this->getPlace(),
             'lat' => $this->getLat(),
             'lon' => $this->getLon(),
-            'started_at' => $this->getStartedAt() ? $this->getStartedAt()->format('Y/m/d H:i:s') : null,
-            'ended_at' => $this->getEndedAt() ? $this->getEndedAt()->format('Y/m/d H:i:s') : null,
+            'started_at' => $this->getStartedAt() ? $this->getStartedAt()->format('Y-m-d H:i:s') : null,
+            'ended_at' => $this->getEndedAt() ? $this->getEndedAt()->format('Y-m-d H:i:s') : null,
             'limit' => $this->getLimit(),
             'participants' => $this->getParticipants(),
             'waiting' => $this->getWaiting(),
@@ -390,8 +390,8 @@ class Event
             'owner_twitter_id' => $this->getOwnerTwitterId(),
             'owner_display_name' => $this->getOwnerDisplayName(),
             'group_id' => $this->getGroupId(),
-            'event_created_at' => $this->getEventCreatedAt() ? $this->getEventCreatedAt()->format('Y/m/d H:i:s') : null,
-            'event_updated_at' => $this->getEventUpdatedAt() ? $this->getEventUpdatedAt()->format('Y/m/d H:i:s') : null,
+            'event_created_at' => $this->getEventCreatedAt() ? $this->getEventCreatedAt()->format('Y-m-d H:i:s') : null,
+            'event_updated_at' => $this->getEventUpdatedAt() ? $this->getEventUpdatedAt()->format('Y-m-d H:i:s') : null,
             'is_online' => $this->isOnline(),
             'types' => array_map(function ($type) {
                 return $type->toArray();

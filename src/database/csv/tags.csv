@@ -16,7 +16,7 @@
 "C#","csharp","[Cc]#"
 "Unity","unity","[Uu]nity"
 "Mac","mac","Mac"
-"Go","go","(?<!Dai|Djan)Go((\s?lang)|(言語))?(?![a-zA-Z]+)"
+"Go","go","((?<!Dai|Djan)[Gg]o((\s?lang)|(言語))?(?![a-zA-Z\.\d]+))|([Gg]opher)"
 "MySQL","mysql","[Mm]y[Ss][Qq][Ll]"
 "CSS","css","((CSS)|(css))"
 "機械学習","機械学習","(機械学習)|([Mm]achine\s?[Ll]earning)"
